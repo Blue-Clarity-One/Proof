@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starknet Marketing Dashboard — Week of May 19–25, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08090d;
+  --bg-elevated: #0e1015;
+  --bg-card: #11141b;
+  --bg-card-hover: #161a23;
+  --border: #1c2030;
+  --border-strong: #2a3045;
+  --text: #e6e8ee;
+  --text-secondary: #9aa0b0;
+  --text-tertiary: #5c6273;
+  --accent: #f97316;
+  --accent-dim: #c2410c;
+  --accent-glow: rgba(249, 115, 22, 0.18);
+  --good: #4ade80;
+  --bad: #f87171;
+  --warn: #fbbf24;
+  --neutral: #94a3b8;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; height: 60vh;
+  background: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 32px 120px;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: end;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.brand-dot {
+  width: 10px; height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 16px var(--accent);
+}
+.brand-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+h1 .accent { color: var(--accent); }
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.meta-block {
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.meta-block strong {
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 2px;
+}
+.meta-block .date {
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+/* ============= MASTER TABS (Channel level) ============= */
+.master-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  padding: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.master-tab {
+  flex: 1;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 14px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+.master-tab:not(.disabled):hover { background: var(--bg-card-hover); color: var(--text); }
+.master-tab.active {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+.master-tab.active .master-tab-dot { background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+.master-tab-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--text-tertiary);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.master-tab-meta {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  font-family: 'JetBrains Mono', monospace;
+}
+.master-tab.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.channel-panel { display: none; }
+.channel-panel.active { display: block; }
+
+/* ============= TABS (Sub-level, within SEO) ============= */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  padding: 12px 20px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  position: relative;
+  margin-bottom: -1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tab:hover { color: var(--text-secondary); background: var(--bg-card); }
+.tab.active {
+  color: var(--text);
+  background: var(--bg-card);
+  border-color: var(--border);
+  border-bottom-color: var(--bg-card);
+}
+.tab.active::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 12px; right: 12px;
+  height: 2px;
+  background: var(--accent);
+}
+.tab-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #0a0c10;
+  font-weight: 700;
+}
+.tab.active .tab-badge { background: var(--accent); }
+.tab .tab-archive {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 8px;
+  background: var(--border-strong);
+  color: var(--text-tertiary);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ============= SECTIONS ============= */
+section { margin-bottom: 56px; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+}
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.section-note {
+  margin-left: auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============= KPI GRID ============= */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.kpi {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 22px 22px 20px;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+.kpi:hover { border-color: var(--border-strong); }
+.kpi-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.kpi-value {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-feature-settings: 'tnum';
+  margin-bottom: 6px;
+  line-height: 1.05;
+}
+.kpi-delta {
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.delta-up { background: rgba(74, 222, 128, 0.12); color: var(--good); }
+.delta-down { background: rgba(248, 113, 113, 0.12); color: var(--bad); }
+.delta-flat { background: rgba(148, 163, 184, 0.12); color: var(--neutral); }
+.kpi-sub {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============= CHARTS ============= */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 22px 22px 14px;
+}
+.chart-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+.chart-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.chart-meta {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: 'JetBrains Mono', monospace;
+}
+.chart-svg { width: 100%; height: 200px; display: block; }
+
+/* ============= TABLES ============= */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-feature-settings: 'tnum';
+  vertical-align: middle;
+}
+tbody tr:hover td { background: var(--bg-card-hover); }
+tbody tr:last-child td { border-bottom: none; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.url-cell {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  max-width: 480px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.query-cell { font-weight: 500; }
+
+/* ============= CLUSTER GRID ============= */
+.cluster-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.cluster {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.cluster:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+.cluster::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 3px; height: 100%;
+  background: var(--accent);
+  opacity: 0.6;
+}
+.cluster-name { font-size: 13px; font-weight: 600; }
+.cluster-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cluster-stat { display: flex; flex-direction: column; }
+.cluster-stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+.cluster-stat-value { font-size: 16px; font-weight: 600; font-feature-settings: 'tnum'; }
+.cluster-meta {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-tertiary);
+}
+
+/* ============= SPLIT ============= */
+.split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.split-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 24px;
+  position: relative;
+}
+.split-card.branded::before, .split-card.non-branded::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+}
+.split-card.branded::before { background: var(--accent); }
+.split-card.non-branded::before { background: var(--text-tertiary); }
+.split-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
+.split-title { font-size: 14px; font-weight: 600; }
+.split-share { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-tertiary); }
+.split-share strong { color: var(--accent); font-weight: 600; }
+.split-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 20px; }
+.split-bar {
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+.split-bar-fill { height: 100%; background: var(--accent); }
+
+/* ============= CANNIBAL ============= */
+.cannibal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.cannibal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+}
+.cannibal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.cannibal-query { font-size: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+.cannibal-severity {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+.sev-high { background: rgba(248, 113, 113, 0.15); color: var(--bad); }
+.sev-med { background: rgba(251, 191, 36, 0.15); color: var(--warn); }
+.sev-low { background: rgba(74, 222, 128, 0.12); color: var(--good); }
+.cannibal-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 11.5px;
+  font-family: 'JetBrains Mono', monospace;
+  align-items: center;
+}
+.cannibal-row + .cannibal-row { border-top: 1px dashed var(--border); }
+.cannibal-url { color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cannibal-url.primary { color: var(--accent); font-weight: 500; }
+.cannibal-pos, .cannibal-imps { color: var(--text-tertiary); font-feature-settings: 'tnum'; min-width: 38px; text-align: right; }
+.cannibal-clicks { color: var(--text); font-feature-settings: 'tnum'; min-width: 32px; text-align: right; }
+
+/* ============= ACTIONS ============= */
+.actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.action-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+}
+.action-flag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 9px;
+  border-radius: 3px;
+  margin-bottom: 14px;
+}
+.flag-urgent { background: var(--bad); color: #0a0c10; }
+.flag-week { background: var(--warn); color: #0a0c10; }
+.flag-month { background: var(--accent); color: #0a0c10; }
+.flag-none { background: var(--text-tertiary); color: #0a0c10; }
+.action-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.action-item { font-size: 12.5px; line-height: 1.5; }
+.action-item strong { display: block; color: var(--text); margin-bottom: 3px; font-weight: 600; }
+.action-item span { color: var(--text-secondary); font-size: 11.5px; }
+
+/* ============= CONTINUITY ============= */
+.continuity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.continuity {
+  background: var(--bg-card);
+  border: 1px dashed var(--border-strong);
+  border-radius: 6px;
+  padding: 20px;
+  min-height: 120px;
+}
+.continuity-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.continuity-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; color: var(--accent); }
+.continuity-tag { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--text-tertiary); }
+.continuity-body { color: var(--text-tertiary); font-size: 12.5px; font-style: italic; }
+.continuity-body.populated { color: var(--text); font-style: normal; }
+
+.month-cell { font-family: 'JetBrains Mono', monospace; }
+.delta-cell { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 2px 6px; border-radius: 3px; display: inline-block; }
+.page-delta { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 2px 6px; border-radius: 3px; }
+
+.callout {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 16px 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.callout strong { color: var(--text); font-weight: 600; }
+.callout.warn { border-left-color: var(--warn); }
+.callout.bad { border-left-color: var(--bad); }
+.help { color: var(--text-tertiary); font-size: 11px; }
+
+/* archive summary view */
+.archive-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+.archive-banner {
+  background: linear-gradient(180deg, rgba(249,115,22,0.06) 0%, transparent 100%);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 18px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.archive-banner-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.archive-banner-text strong { color: var(--text); }
+.archive-banner-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+footer {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: 'JetBrains Mono', monospace;
+}
+footer .reminder { color: var(--warn); font-style: italic; }
+
+/* Privacy cluster / deep-dive sections */
+.deepdive-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.subgroup-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.subgroup-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.subgroup-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.subgroup-tag {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.subgroup-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.subgroup-queries {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.subgroup-q-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 12px;
+  align-items: center;
+}
+.subgroup-q-row + .subgroup-q-row { border-top: 1px solid var(--border); }
+.subgroup-q {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.subgroup-q-imp { color: var(--text); font-feature-settings: 'tnum'; font-family: 'JetBrains Mono', monospace; }
+.subgroup-q-pos { color: var(--text-tertiary); font-feature-settings: 'tnum'; font-family: 'JetBrains Mono', monospace; }
+.subgroup-q-cl {
+  color: var(--accent);
+  font-weight: 600;
+  font-feature-settings: 'tnum';
+  font-family: 'JetBrains Mono', monospace;
+}
+.subgroup-q-cl.zero { color: var(--text-tertiary); font-weight: 400; }
+
+/* Insights list */
+.insights-list {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.insights-list ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.insights-list li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 18px;
+  position: relative;
+}
+.insights-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+.insights-list li strong { color: var(--text); font-weight: 600; }
+
+/* Blog comparison */
+.blog-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.blog-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.blog-col-head {
+  padding: 14px 18px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+.blog-col-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.blog-col-meta {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 4px;
+}
+.blog-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 12px 18px;
+  align-items: center;
+}
+.blog-row + .blog-row { border-top: 1px solid var(--border); }
+.blog-row:hover { background: var(--bg-card-hover); }
+.blog-slug {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.blog-rank {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-right: 8px;
+}
+.blog-metric {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-feature-settings: 'tnum';
+  text-align: right;
+  min-width: 65px;
+}
+.blog-metric-val {
+  color: var(--text);
+  font-weight: 600;
+  display: block;
+}
+.blog-metric-sub {
+  color: var(--text-tertiary);
+  font-size: 10px;
+  display: block;
+  margin-top: 1px;
+}
+
+@media (max-width: 900px) {
+  .kpi-grid, .chart-grid, .cluster-grid, .cannibal-grid, .actions-grid, .split-grid, .continuity-grid, .blog-grid, .deepdive-grid {
+    grid-template-columns: 1fr;
+  }
+  h1 { font-size: 28px; }
+  .container { padding: 24px 16px 80px; }
+  header { grid-template-columns: 1fr; }
+  .meta-block { text-align: left; }
+  .tab { padding: 10px 14px; font-size: 12px; }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .cluster-grid, .cannibal-grid { grid-template-columns: repeat(2, 1fr); }
+  .actions-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-tag">MARKETING PERFORMANCE DASHBOARD</div>
+    </div>
+    <h1><span class="accent">Starknet</span> Marketing Dashboard</h1>
+    <div class="subtitle">Cross-channel performance · Channels expand over time · Currently SEO &amp; Email</div>
+  </div>
+  <div class="meta-block">
+    <strong>LATEST RUN</strong>
+    <div class="date">2026-05-28</div>
+    <div style="margin-top:10px"><strong>SOURCES</strong></div>
+    <div class="date">GSC · HubSpot</div>
+    <div style="margin-top:10px"><strong>BASELINE</strong></div>
+    <div class="date">6 months · 26 weeks</div>
+  </div>
+</header>
+
+<!-- ============= MASTER TABS (Channel) ============= -->
+<div class="master-tabs" role="tablist">
+  <button class="master-tab active" data-channel="seo" role="tab">
+    <span class="master-tab-dot"></span>
+    <span>SEO</span>
+    <span class="master-tab-meta">Search Console</span>
+  </button>
+  <button class="master-tab" data-channel="email" role="tab">
+    <span class="master-tab-dot"></span>
+    <span>Email</span>
+    <span class="master-tab-meta">HubSpot</span>
+  </button>
+  <button class="master-tab disabled" disabled>
+    <span class="master-tab-dot"></span>
+    <span>Social</span>
+    <span class="master-tab-meta">Coming soon</span>
+  </button>
+  <button class="master-tab disabled" disabled>
+    <span class="master-tab-dot"></span>
+    <span>Paid</span>
+    <span class="master-tab-meta">Coming soon</span>
+  </button>
+</div>
+
+<!-- ============= SEO CHANNEL ============= -->
+<div class="channel-panel active" data-channel="seo">
+
+<!-- SEO sub-tabs (weekly archive) -->
+<div class="tabs" role="tablist">
+  <button class="tab active" data-tab="current" role="tab">
+    <span>Week 19–25 May</span>
+    <span class="tab-badge">LATEST</span>
+  </button>
+  <button class="tab" data-tab="may13" role="tab">
+    <span>Week 4–10 May</span>
+    <span class="tab-archive">13 May</span>
+  </button>
+  <button class="tab" data-tab="may09" role="tab">
+    <span>Week 30 Apr – 6 May</span>
+    <span class="tab-archive">9 May</span>
+  </button>
+</div>
+
+<!-- ============= CURRENT WEEK TAB ============= -->
+<div class="tab-panel active" data-panel="current">
+
+<section>
+  <div class="section-head">
+    <span class="section-number">01</span>
+    <h2>Week vs. last week</h2>
+    <span class="section-note">2026-05-19 → 2026-05-25 vs 2026-05-12 → 2026-05-18</span>
+  </div>
+  <div class="kpi-grid" id="kpi-grid"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">02</span>
+    <h2>Six-month trend</h2>
+    <span class="section-note">Daily values · 7-day moving average overlay</span>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">Clicks per day</span>
+        <span class="chart-meta" id="clicks-meta"></span>
+      </div>
+      <svg class="chart-svg" id="chart-clicks" viewBox="0 0 700 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">Impressions per day</span>
+        <span class="chart-meta" id="imps-meta"></span>
+      </div>
+      <svg class="chart-svg" id="chart-imps" viewBox="0 0 700 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">CTR</span>
+        <span class="chart-meta" id="ctr-meta"></span>
+      </div>
+      <svg class="chart-svg" id="chart-ctr" viewBox="0 0 700 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">Average position <span class="help">(lower = better)</span></span>
+        <span class="chart-meta" id="pos-meta"></span>
+      </div>
+      <svg class="chart-svg" id="chart-pos" viewBox="0 0 700 200" preserveAspectRatio="none"></svg>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">03</span>
+    <h2>Monthly averages &amp; MoM deltas</h2>
+    <span class="section-note">Position weighted by impressions · MoM = change vs prior month</span>
+  </div>
+  <div class="callout">
+    <strong>November anomaly:</strong> Nov 2025 figures are inflated by a 4-day spam/viral spike (Nov 16–19, position drifted to 45). True organic baseline more accurately reflected from December onward. Position trajectory across the window: 19.3 → 11.4 → 9.6 → 7.6 → 6.2 → 7.2 → 9.0. May rebound continues with avg position 9.0.
+  </div>
+  <div class="table-card">
+    <table id="monthly-table"></table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">04</span>
+    <h2>31-day clean baseline</h2>
+    <span class="section-note">Excludes days with position &gt; 30 (spam/viral anomalies)</span>
+  </div>
+  <div class="kpi-grid" id="baseline-grid"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">05</span>
+    <h2>Branded vs. non-branded</h2>
+    <span class="section-note">Branded = queries containing starknet, starkgate, starkscan, strk, starkzap, starkware + typos</span>
+  </div>
+  <div class="callout warn">
+    <strong>Heavy brand-reliance:</strong> Branded queries drive <span id="branded-share-pct"></span> of clicks despite being only <span id="branded-imp-share"></span> of impressions. Non-branded traffic is high-volume / low-intent — clicks aren't converting from generic informational queries. This is the single largest growth lever.
+  </div>
+  <div class="split-grid" id="split-grid"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">06</span>
+    <h2>Keyword clusters</h2>
+    <span class="section-note">200 queries grouped · last 30 days</span>
+  </div>
+  <div class="cluster-grid" id="cluster-grid"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">07</span>
+    <h2>Privacy &amp; confidentiality deep-dive</h2>
+    <span class="section-note">80+ privacy-related queries · expanded sample</span>
+  </div>
+  <div class="callout warn">
+    <strong>Major untapped category.</strong> Starknet is being surfaced for the privacy story but earning almost no clicks. Many query variants follow LLM-agent patterns ("does starknet provide privacy by default?") — these are AI assistants doing research on behalf of users. The right page to capture this demand doesn't exist yet.
+  </div>
+  <div class="deepdive-grid" id="privacy-kpis"></div>
+  <div id="privacy-subgroups"></div>
+  <div class="insights-list" id="privacy-insights"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">08</span>
+    <h2>Blog performance</h2>
+    <span class="section-note">Top 10 blog pages by clicks &amp; impressions · last 30 days</span>
+  </div>
+  <div class="callout">
+    <strong>Blog CTR is 0.25%</strong> — still well below the site average. The blog remains a heavy-impression, light-click engine. Layer-2-scaling-solutions, starter-pack, ekubo-amm-endgame collectively earn 93k impressions but only 57 clicks. Title rewrites are the highest-leverage opportunity on the site.
+  </div>
+  <div class="kpi-grid" id="blog-kpis" style="margin-bottom: 20px"></div>
+  <div class="blog-grid">
+    <div class="blog-col" id="blog-by-clicks"></div>
+    <div class="blog-col" id="blog-by-imps"></div>
+  </div>
+  <div class="insights-list" id="blog-insights" style="margin-top: 20px"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">09</span>
+    <h2>Quick wins</h2>
+    <span class="section-note">Position 4–20 · &gt;100 impressions · CTR below expected · sorted by lost clicks</span>
+  </div>
+  <div class="table-card">
+    <table id="qw-table"></table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">10</span>
+    <h2>CTR underperformers (Top 10)</h2>
+    <span class="section-note">Ranking position 1–10 · CTR below 50% of expected</span>
+  </div>
+  <div class="callout">
+    Position is strong on these queries but the listing isn't earning clicks. Investigate SERP features (AI overviews, knowledge panels eating CTR), title/meta optimisation, or whether the intent match is correct.
+  </div>
+  <div class="table-card">
+    <table id="ctr-under-table"></table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">11</span>
+    <h2>Cannibalisation review</h2>
+    <span class="section-note">starknet wallet · starknet staking · account abstraction</span>
+  </div>
+  <div class="cannibal-grid" id="cannibal-grid"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">12</span>
+    <h2>Top pages — this week vs last</h2>
+    <span class="section-note">Top 10 by clicks · arrows show WoW change</span>
+  </div>
+  <div class="table-card">
+    <table id="pages-table"></table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">13</span>
+    <h2>Prioritised actions</h2>
+    <span class="section-note">Triaged by urgency &amp; impact</span>
+  </div>
+  <div class="actions-grid" id="actions-grid"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">14</span>
+    <h2>Continuity</h2>
+    <span class="section-note">Carried forward from prior reports</span>
+  </div>
+  <div class="continuity-grid">
+    <div class="continuity">
+      <div class="continuity-head">
+        <span class="continuity-label">Done last week</span>
+        <span class="continuity-tag">FROM 9 MAY REPORT</span>
+      </div>
+      <div class="continuity-body populated">
+        Per 13 May report: tagged "starknet wallet" cannibalisation for resolution. Audited "crypto staking" site-search hijack (flagged to web team). Logged top-5 quick-win meta rewrites (strk, ekubo, amm, stargate bridge, bitcoin staking). Flagged /blog/layer-2-scaling-solutions/ for CTR rewrite.
+      </div>
+    </div>
+    <div class="continuity">
+      <div class="continuity-head">
+        <span class="continuity-label">Doing this week</span>
+        <span class="continuity-tag">CURRENT</span>
+      </div>
+      <div class="continuity-body populated">
+        Investigate the 12–13 May traffic spike (strkbtc faucet went viral — peak 1,229 clicks/day, then fell back ~70%). Audit "account abstraction" page strategy (blog at pos 11 vs docs page invisible). Push meta rewrites on /dapps/ (16 clicks on 9.7k imps) and docs.starknet.io/learn/protocol/strk (14 clicks on 9.4k imps).
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+<!-- end current week tab -->
+
+<!-- ============= ARCHIVED TAB CONTAINERS (SEO) ============= -->
+<div class="tab-panel" data-panel="may13" id="panel-may13"></div>
+<div class="tab-panel" data-panel="may09" id="panel-may09"></div>
+
+</div>
+<!-- end SEO channel panel -->
+
+<!-- ============= EMAIL CHANNEL ============= -->
+<div class="channel-panel" data-channel="email">
+
+<div class="callout bad" style="margin-bottom: 32px">
+  <strong>Deliverability alert.</strong> Open rates have collapsed from 49% (Aug 2025) to 3.5% (May 2026) while send volume scaled from ~4k to ~46k per send. This is a classic deliverability/inbox-placement problem, not a content or list problem. Major investigation needed — see Actions section.
+</div>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">01</span>
+    <h2>Week vs. last week</h2>
+    <span class="section-note">Email campaigns last 7 days vs prior 7 days</span>
+  </div>
+  <div class="kpi-grid" id="email-kpi-grid"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">02</span>
+    <h2>Six-month trend</h2>
+    <span class="section-note">Weekly aggregates · 4-week moving average overlay</span>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">Emails sent per week</span>
+        <span class="chart-meta" id="email-sent-meta"></span>
+      </div>
+      <svg class="chart-svg" id="email-chart-sent" viewBox="0 0 700 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">Open rate</span>
+        <span class="chart-meta" id="email-open-meta"></span>
+      </div>
+      <svg class="chart-svg" id="email-chart-open" viewBox="0 0 700 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">Click rate <span class="help">(clicks / delivered)</span></span>
+        <span class="chart-meta" id="email-click-meta"></span>
+      </div>
+      <svg class="chart-svg" id="email-chart-click" viewBox="0 0 700 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">Unsubscribe rate <span class="help">(lower = better)</span></span>
+        <span class="chart-meta" id="email-unsub-meta"></span>
+      </div>
+      <svg class="chart-svg" id="email-chart-unsub" viewBox="0 0 700 200" preserveAspectRatio="none"></svg>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">03</span>
+    <h2>Monthly retrospective</h2>
+    <span class="section-note">Aggregated by month · MoM deltas show the decline trajectory</span>
+  </div>
+  <div class="callout bad">
+    <strong>Read this table carefully.</strong> Open rates fell from 49% → 3.5% over 9 months. This is the most important pattern in the entire report. Crypto/web3 industry benchmark is 18–25% open rate; sub-10% indicates emails landing in spam folders or promotional tabs.
+  </div>
+  <div class="table-card">
+    <table id="email-monthly-table"></table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">04</span>
+    <h2>All-time totals</h2>
+    <span class="section-note">Cumulative · 13 months of campaigns</span>
+  </div>
+  <div class="kpi-grid" id="email-totals-grid"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">05</span>
+    <h2>Top campaigns — last 30 days</h2>
+    <span class="section-note">By clicks · then by open rate</span>
+  </div>
+  <div class="blog-grid">
+    <div class="blog-col" id="email-top-clicks"></div>
+    <div class="blog-col" id="email-top-openrate"></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">06</span>
+    <h2>Unsubscribe risk</h2>
+    <span class="section-note">Campaigns with &gt;0.5% unsubscribe rate · ordered by severity</span>
+  </div>
+  <div class="callout warn">
+    <strong>The "(A) strkBTC Watch Party" A/B test variant unsubscribed 0.56% of recipients in a single send.</strong> Combined with the open-rate collapse, this pattern suggests content fatigue and inbox-placement issues compounding.
+  </div>
+  <div class="table-card">
+    <table id="email-unsub-table"></table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">07</span>
+    <h2>Performance by communication type</h2>
+    <span class="section-note">Average rates across categories · &gt;100 deliveries minimum</span>
+  </div>
+  <div class="cluster-grid" id="email-by-type"></div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">08</span>
+    <h2>Performance by subject-line classification</h2>
+    <span class="section-note">HubSpot's automatic subject-line categorisation</span>
+  </div>
+  <div class="table-card">
+    <table id="email-by-subject"></table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">09</span>
+    <h2>Best-ever campaigns</h2>
+    <span class="section-note">Top 10 by absolute opens · 13-month window</span>
+  </div>
+  <div class="callout">
+    These show what's possible. Campaigns from August–September 2025 dominate. They had smaller, more targeted audiences (Basecamp, Founder Basecamp programmes) and converted at 50%+ open rates.
+  </div>
+  <div class="table-card">
+    <table id="email-best-table"></table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-number">10</span>
+    <h2>Prioritised actions</h2>
+    <span class="section-note">Email-specific recommendations</span>
+  </div>
+  <div class="actions-grid" id="email-actions-grid"></div>
+</section>
+
+</div>
+<!-- end Email channel panel -->
+
+<footer>
+  <div>Starknet Marketing Dashboard · v4 · Generated 2026-05-13 · Sources: GSC + HubSpot</div>
+  <div class="reminder">⚠ AMBER data — Human review required before sharing externally</div>
+</footer>
+
+</div>
+
+<script>
+const REPORT_DATA = {"meta": {"site": "sc-domain:starknet.io", "generated_at": "2026-05-28", "reporting_period": "2026-05-19 to 2026-05-25 (3-day GSC lag accounted)", "previous_period": "2026-05-12 to 2026-05-18", "baseline_period": "2025-11-13 to 2026-05-25 (6 months)", "queries_period": "2026-04-26 to 2026-05-25 (last 30 days)"}, "time_series": [{"date": "2025-11-13", "clicks": 436, "impressions": 25583, "ctr": 0.01704256732986749, "position": 8.422741664386507}, {"date": "2025-11-14", "clicks": 733, "impressions": 31284, "ctr": 0.0234305076077228, "position": 8.350051144354943}, {"date": "2025-11-15", "clicks": 823, "impressions": 33650, "ctr": 0.024457652303120355, "position": 7.6921545319465086}, {"date": "2025-11-16", "clicks": 2086, "impressions": 94346, "ctr": 0.022110105356877876, "position": 45.777234858923535}, {"date": "2025-11-17", "clicks": 1633, "impressions": 69331, "ctr": 0.023553677287216395, "position": 43.84490343425019}, {"date": "2025-11-18", "clicks": 709, "impressions": 30836, "ctr": 0.022992606044882603, "position": 9.974283305227656}, {"date": "2025-11-19", "clicks": 1373, "impressions": 48113, "ctr": 0.028536985845821296, "position": 11.20695030449151}, {"date": "2025-11-20", "clicks": 790, "impressions": 36024, "ctr": 0.021929824561403508, "position": 10.706778814123917}, {"date": "2025-11-21", "clicks": 691, "impressions": 31767, "ctr": 0.02175213271634086, "position": 9.14606352504171}, {"date": "2025-11-22", "clicks": 493, "impressions": 23439, "ctr": 0.02103332053415248, "position": 9.497674815478476}, {"date": "2025-11-23", "clicks": 502, "impressions": 28031, "ctr": 0.017908743890692448, "position": 9.42670614676608}, {"date": "2025-11-24", "clicks": 613, "impressions": 32186, "ctr": 0.019045547753681724, "position": 9.62617287019201}, {"date": "2025-11-25", "clicks": 587, "impressions": 33063, "ctr": 0.017753984816864774, "position": 9.473399268063998}, {"date": "2025-11-26", "clicks": 482, "impressions": 32780, "ctr": 0.014704087858450274, "position": 9.857748627211715}, {"date": "2025-11-27", "clicks": 431, "impressions": 28942, "ctr": 0.01489185267085896, "position": 9.399557736161979}, {"date": "2025-11-28", "clicks": 333, "impressions": 27746, "ctr": 0.012001729979096086, "position": 11.163771354429468}, {"date": "2025-11-29", "clicks": 240, "impressions": 21662, "ctr": 0.011079309389714707, "position": 7.308974240605669}, {"date": "2025-11-30", "clicks": 306, "impressions": 36716, "ctr": 0.008334241202745398, "position": 29.25768057522606}, {"date": "2025-12-01", "clicks": 408, "impressions": 37465, "ctr": 0.010890164153209663, "position": 18.073855598558655}, {"date": "2025-12-02", "clicks": 452, "impressions": 28555, "ctr": 0.01582910173349676, "position": 10.263946769392401}, {"date": "2025-12-03", "clicks": 474, "impressions": 29713, "ctr": 0.015952613334230807, "position": 9.800861575741258}, {"date": "2025-12-04", "clicks": 406, "impressions": 27144, "ctr": 0.014957264957264958, "position": 11.906756557618627}, {"date": "2025-12-05", "clicks": 358, "impressions": 23067, "ctr": 0.01552000693631595, "position": 13.201933498070836}, {"date": "2025-12-06", "clicks": 289, "impressions": 19071, "ctr": 0.015153898589481412, "position": 13.658329400660689}, {"date": "2025-12-07", "clicks": 262, "impressions": 19131, "ctr": 0.013695049918979666, "position": 10.01233599916366}, {"date": "2025-12-08", "clicks": 399, "impressions": 23219, "ctr": 0.01718420259270425, "position": 10.79465093242603}, {"date": "2025-12-09", "clicks": 379, "impressions": 22126, "ctr": 0.017129169303082347, "position": 11.831646027298202}, {"date": "2025-12-10", "clicks": 403, "impressions": 21709, "ctr": 0.018563729328849785, "position": 9.509373992353401}, {"date": "2025-12-11", "clicks": 342, "impressions": 20810, "ctr": 0.016434406535319558, "position": 10.800480538202788}, {"date": "2025-12-12", "clicks": 278, "impressions": 23100, "ctr": 0.012034632034632035, "position": 9.59969696969697}, {"date": "2025-12-13", "clicks": 213, "impressions": 15296, "ctr": 0.013925209205020921, "position": 10.474307008368202}, {"date": "2025-12-14", "clicks": 283, "impressions": 17820, "ctr": 0.015881032547699216, "position": 12.22912457912458}, {"date": "2025-12-15", "clicks": 395, "impressions": 22466, "ctr": 0.017582124098637943, "position": 9.710317813584973}, {"date": "2025-12-16", "clicks": 395, "impressions": 21699, "ctr": 0.018203603852712108, "position": 11.858841421263653}, {"date": "2025-12-17", "clicks": 360, "impressions": 20455, "ctr": 0.017599608897580055, "position": 11.509117575164996}, {"date": "2025-12-18", "clicks": 339, "impressions": 25276, "ctr": 0.013411932267763887, "position": 11.412209210318089}, {"date": "2025-12-19", "clicks": 277, "impressions": 20733, "ctr": 0.013360343413881252, "position": 11.108956735638836}, {"date": "2025-12-20", "clicks": 219, "impressions": 18921, "ctr": 0.011574441097193595, "position": 9.13191691771048}, {"date": "2025-12-21", "clicks": 291, "impressions": 22431, "ctr": 0.012973117560518924, "position": 14.046275244081851}, {"date": "2025-12-22", "clicks": 394, "impressions": 29371, "ctr": 0.013414592625378774, "position": 16.560212454461883}, {"date": "2025-12-23", "clicks": 298, "impressions": 25568, "ctr": 0.011655193992490613, "position": 15.659730913642052}, {"date": "2025-12-24", "clicks": 197, "impressions": 19597, "ctr": 0.010052559065163036, "position": 9.25825381435934}, {"date": "2025-12-25", "clicks": 224, "impressions": 17513, "ctr": 0.012790498486838348, "position": 9.449266259350196}, {"date": "2025-12-26", "clicks": 205, "impressions": 17361, "ctr": 0.011808075571683658, "position": 9.240308737975923}, {"date": "2025-12-27", "clicks": 217, "impressions": 18005, "ctr": 0.012052207720077757, "position": 9.701971674534851}, {"date": "2025-12-28", "clicks": 241, "impressions": 19817, "ctr": 0.012161275672402484, "position": 11.537921986173487}, {"date": "2025-12-29", "clicks": 284, "impressions": 23312, "ctr": 0.012182566918325326, "position": 8.934068291008924}, {"date": "2025-12-30", "clicks": 245, "impressions": 26019, "ctr": 0.009416195856873822, "position": 8.442907106345363}, {"date": "2025-12-31", "clicks": 212, "impressions": 27909, "ctr": 0.007596115948260418, "position": 7.961123651868573}, {"date": "2026-01-01", "clicks": 213, "impressions": 23347, "ctr": 0.00912322782370326, "position": 8.616738767293443}, {"date": "2026-01-02", "clicks": 231, "impressions": 27457, "ctr": 0.00841315511527115, "position": 7.592745019485013}, {"date": "2026-01-03", "clicks": 207, "impressions": 21883, "ctr": 0.009459397705981813, "position": 7.771557830279212}, {"date": "2026-01-04", "clicks": 280, "impressions": 26943, "ctr": 0.010392309690828787, "position": 7.597557807222655}, {"date": "2026-01-05", "clicks": 496, "impressions": 33415, "ctr": 0.014843633098907676, "position": 9.535298518629357}, {"date": "2026-01-06", "clicks": 342, "impressions": 41629, "ctr": 0.008215426745778184, "position": 7.962766340772058}, {"date": "2026-01-07", "clicks": 323, "impressions": 38734, "ctr": 0.00833892704084267, "position": 9.084731760210667}, {"date": "2026-01-08", "clicks": 265, "impressions": 35844, "ctr": 0.007393148086151099, "position": 8.569858274746121}, {"date": "2026-01-09", "clicks": 255, "impressions": 35022, "ctr": 0.007281137570669865, "position": 9.976214950602479}, {"date": "2026-01-10", "clicks": 197, "impressions": 35914, "ctr": 0.005485326056690984, "position": 9.50172634627165}, {"date": "2026-01-11", "clicks": 252, "impressions": 37092, "ctr": 0.006793917825946296, "position": 11.003208238973363}, {"date": "2026-01-12", "clicks": 309, "impressions": 40023, "ctr": 0.007720560677610374, "position": 10.96514504160108}, {"date": "2026-01-13", "clicks": 306, "impressions": 36214, "ctr": 0.00844977080687027, "position": 7.889020820677086}, {"date": "2026-01-14", "clicks": 800, "impressions": 46857, "ctr": 0.017073222784215806, "position": 8.163668181915188}, {"date": "2026-01-15", "clicks": 511, "impressions": 41239, "ctr": 0.01239118310337302, "position": 12.04090787846456}, {"date": "2026-01-16", "clicks": 368, "impressions": 58264, "ctr": 0.006316078539063573, "position": 9.873884388301525}, {"date": "2026-01-17", "clicks": 205, "impressions": 41708, "ctr": 0.0049151241967967775, "position": 10.056847607173683}, {"date": "2026-01-18", "clicks": 273, "impressions": 40427, "ctr": 0.0067529126573824426, "position": 10.941276869418953}, {"date": "2026-01-19", "clicks": 341, "impressions": 45513, "ctr": 0.007492364818842968, "position": 12.481642607606618}, {"date": "2026-01-20", "clicks": 375, "impressions": 38450, "ctr": 0.00975292587776333, "position": 9.788582574772432}, {"date": "2026-01-21", "clicks": 291, "impressions": 37700, "ctr": 0.007718832891246684, "position": 10.12949602122016}, {"date": "2026-01-22", "clicks": 320, "impressions": 35291, "ctr": 0.00906746762630699, "position": 10.898189340058371}, {"date": "2026-01-23", "clicks": 271, "impressions": 34629, "ctr": 0.0078258107366658, "position": 11.279043576193365}, {"date": "2026-01-24", "clicks": 208, "impressions": 33442, "ctr": 0.006219723700735602, "position": 11.267956461934094}, {"date": "2026-01-25", "clicks": 250, "impressions": 42382, "ctr": 0.005898730593176349, "position": 8.393539710254354}, {"date": "2026-01-26", "clicks": 258, "impressions": 40290, "ctr": 0.006403574087862993, "position": 9.76487962273517}, {"date": "2026-01-27", "clicks": 380, "impressions": 49157, "ctr": 0.007730333421486258, "position": 7.988282441971642}, {"date": "2026-01-28", "clicks": 365, "impressions": 44212, "ctr": 0.008255677191712657, "position": 9.422193069754817}, {"date": "2026-01-29", "clicks": 350, "impressions": 41601, "ctr": 0.008413259296651522, "position": 8.40198552919401}, {"date": "2026-01-30", "clicks": 280, "impressions": 45139, "ctr": 0.006203061654002083, "position": 9.360264959347793}, {"date": "2026-01-31", "clicks": 270, "impressions": 40223, "ctr": 0.006712577381100366, "position": 9.507396265818064}, {"date": "2026-02-01", "clicks": 239, "impressions": 47792, "ctr": 0.005000836960160696, "position": 9.453653331101439}, {"date": "2026-02-02", "clicks": 322, "impressions": 47822, "ctr": 0.006733302664045837, "position": 9.224310986575217}, {"date": "2026-02-03", "clicks": 308, "impressions": 43572, "ctr": 0.00706875975397044, "position": 6.604447810520518}, {"date": "2026-02-04", "clicks": 373, "impressions": 62891, "ctr": 0.005930896312667949, "position": 5.656357825444022}, {"date": "2026-02-05", "clicks": 354, "impressions": 43198, "ctr": 0.008194823834436779, "position": 7.226792907079031}, {"date": "2026-02-06", "clicks": 237, "impressions": 36529, "ctr": 0.0064879958389225, "position": 7.8621369323003645}, {"date": "2026-02-07", "clicks": 216, "impressions": 33898, "ctr": 0.0063720573485161365, "position": 7.20889138002242}, {"date": "2026-02-08", "clicks": 419, "impressions": 35226, "ctr": 0.011894623289615625, "position": 7.668625447112928}, {"date": "2026-02-09", "clicks": 391, "impressions": 47008, "ctr": 0.008317733151803949, "position": 7.7902697413206266}, {"date": "2026-02-10", "clicks": 340, "impressions": 43578, "ctr": 0.007802101978062325, "position": 7.307265133783101}, {"date": "2026-02-11", "clicks": 366, "impressions": 32318, "ctr": 0.011324958227613095, "position": 9.377746147657652}, {"date": "2026-02-12", "clicks": 333, "impressions": 27245, "ctr": 0.012222426133235455, "position": 9.729014498073042}, {"date": "2026-02-13", "clicks": 252, "impressions": 21887, "ctr": 0.011513683921962808, "position": 8.37254991547494}, {"date": "2026-02-14", "clicks": 296, "impressions": 19168, "ctr": 0.015442404006677797, "position": 8.18849123539232}, {"date": "2026-02-15", "clicks": 300, "impressions": 21912, "ctr": 0.013691128148959474, "position": 8.284821102592186}, {"date": "2026-02-16", "clicks": 351, "impressions": 27907, "ctr": 0.012577489518758735, "position": 7.590102841580966}, {"date": "2026-02-17", "clicks": 305, "impressions": 24071, "ctr": 0.01267084873914669, "position": 8.123301898550123}, {"date": "2026-02-18", "clicks": 298, "impressions": 25979, "ctr": 0.011470803341160168, "position": 8.108510720197081}, {"date": "2026-02-19", "clicks": 305, "impressions": 31114, "ctr": 0.009802661181461721, "position": 7.25689400269975}, {"date": "2026-02-20", "clicks": 206, "impressions": 32196, "ctr": 0.006398310349111691, "position": 6.726798360044726}, {"date": "2026-02-21", "clicks": 175, "impressions": 24523, "ctr": 0.00713615789259063, "position": 8.27643436773641}, {"date": "2026-02-22", "clicks": 228, "impressions": 25845, "ctr": 0.00882182240278584, "position": 8.45238924356742}, {"date": "2026-02-23", "clicks": 298, "impressions": 33363, "ctr": 0.008932050475077181, "position": 6.678805862782124}, {"date": "2026-02-24", "clicks": 268, "impressions": 35856, "ctr": 0.00747434181169121, "position": 6.45010597947345}, {"date": "2026-02-25", "clicks": 266, "impressions": 33876, "ctr": 0.007852166725705514, "position": 7.2284213012162}, {"date": "2026-02-26", "clicks": 330, "impressions": 40415, "ctr": 0.008165285166398615, "position": 7.4697760732401335}, {"date": "2026-02-27", "clicks": 296, "impressions": 40153, "ctr": 0.007371802854083132, "position": 7.190048066146987}, {"date": "2026-02-28", "clicks": 170, "impressions": 36934, "ctr": 0.004602805003519792, "position": 6.702983700655222}, {"date": "2026-03-01", "clicks": 201, "impressions": 43831, "ctr": 0.004585795441582442, "position": 6.418653464442974}, {"date": "2026-03-02", "clicks": 263, "impressions": 53735, "ctr": 0.004894389131850749, "position": 6.146608355820229}, {"date": "2026-03-03", "clicks": 242, "impressions": 54125, "ctr": 0.004471131639722864, "position": 5.710207852193995}, {"date": "2026-03-04", "clicks": 220, "impressions": 36668, "ctr": 0.005999781826115414, "position": 6.391322133740592}, {"date": "2026-03-05", "clicks": 245, "impressions": 35620, "ctr": 0.006878158338012353, "position": 6.087057832678271}, {"date": "2026-03-06", "clicks": 231, "impressions": 30877, "ctr": 0.007481296758104738, "position": 6.104025650160313}, {"date": "2026-03-07", "clicks": 182, "impressions": 32483, "ctr": 0.005602930763784133, "position": 5.717359849767571}, {"date": "2026-03-08", "clicks": 191, "impressions": 28872, "ctr": 0.006615405929620393, "position": 6.144811582155722}, {"date": "2026-03-09", "clicks": 287, "impressions": 36776, "ctr": 0.007804002610398085, "position": 6.312731128997172}, {"date": "2026-03-10", "clicks": 326, "impressions": 36286, "ctr": 0.008984181226919474, "position": 5.922642341398887}, {"date": "2026-03-11", "clicks": 276, "impressions": 29787, "ctr": 0.009265787088327123, "position": 6.436902004230033}, {"date": "2026-03-12", "clicks": 266, "impressions": 34962, "ctr": 0.00760826039700246, "position": 5.772095417882272}, {"date": "2026-03-13", "clicks": 220, "impressions": 26500, "ctr": 0.00830188679245283, "position": 6.190867924528302}, {"date": "2026-03-14", "clicks": 194, "impressions": 21855, "ctr": 0.008876687256920613, "position": 6.058567833447723}, {"date": "2026-03-15", "clicks": 198, "impressions": 20365, "ctr": 0.009722563221212866, "position": 6.528897618463049}, {"date": "2026-03-16", "clicks": 251, "impressions": 25465, "ctr": 0.009856666012173571, "position": 6.698213233850383}, {"date": "2026-03-17", "clicks": 276, "impressions": 28956, "ctr": 0.009531703273932863, "position": 6.557846387622599}, {"date": "2026-03-18", "clicks": 238, "impressions": 24538, "ctr": 0.00969924199201239, "position": 6.756785394082647}, {"date": "2026-03-19", "clicks": 207, "impressions": 26479, "ctr": 0.007817515767211753, "position": 6.489482231202085}, {"date": "2026-03-20", "clicks": 204, "impressions": 25219, "ctr": 0.008089139141123755, "position": 6.5239303699591575}, {"date": "2026-03-21", "clicks": 154, "impressions": 24090, "ctr": 0.006392694063926941, "position": 6.199792444997924}, {"date": "2026-03-22", "clicks": 191, "impressions": 25119, "ctr": 0.007603805883992197, "position": 6.249412795095346}, {"date": "2026-03-23", "clicks": 310, "impressions": 29556, "ctr": 0.010488564081743132, "position": 6.162877249966166}, {"date": "2026-03-24", "clicks": 299, "impressions": 29719, "ctr": 0.010060903798916518, "position": 6.3898516100810925}, {"date": "2026-03-25", "clicks": 289, "impressions": 29345, "ctr": 0.009848355767592435, "position": 6.467370932015675}, {"date": "2026-03-26", "clicks": 389, "impressions": 28737, "ctr": 0.013536555659950586, "position": 5.834429481156697}, {"date": "2026-03-27", "clicks": 232, "impressions": 29861, "ctr": 0.007769331234720874, "position": 5.857506446535615}, {"date": "2026-03-28", "clicks": 137, "impressions": 30934, "ctr": 0.004428783862416758, "position": 5.737085407642077}, {"date": "2026-03-29", "clicks": 153, "impressions": 34109, "ctr": 0.004485619631182386, "position": 5.973350142191211}, {"date": "2026-03-30", "clicks": 239, "impressions": 41536, "ctr": 0.00575404468412943, "position": 6.078389830508475}, {"date": "2026-03-31", "clicks": 304, "impressions": 46732, "ctr": 0.006505178464435504, "position": 5.901716168792262}, {"date": "2026-04-01", "clicks": 246, "impressions": 37297, "ctr": 0.006595704748371183, "position": 6.108078397726358}, {"date": "2026-04-02", "clicks": 246, "impressions": 34827, "ctr": 0.007063485226979068, "position": 6.011628908605393}, {"date": "2026-04-03", "clicks": 214, "impressions": 31791, "ctr": 0.006731464879997483, "position": 6.1250982982605136}, {"date": "2026-04-04", "clicks": 164, "impressions": 32716, "ctr": 0.0050128377552268, "position": 5.692413497982638}, {"date": "2026-04-05", "clicks": 168, "impressions": 33716, "ctr": 0.0049827974848736505, "position": 5.812195990034405}, {"date": "2026-04-06", "clicks": 222, "impressions": 32555, "ctr": 0.006819228997081862, "position": 5.885670403931807}, {"date": "2026-04-07", "clicks": 225, "impressions": 30836, "ctr": 0.00729666623427163, "position": 6.301692826566351}, {"date": "2026-04-08", "clicks": 220, "impressions": 52297, "ctr": 0.004206742260550319, "position": 5.940608447903322}, {"date": "2026-04-09", "clicks": 254, "impressions": 76021, "ctr": 0.0033411820418042383, "position": 6.573341576669605}, {"date": "2026-04-10", "clicks": 195, "impressions": 69476, "ctr": 0.002806724624330704, "position": 7.802464160285567}, {"date": "2026-04-11", "clicks": 149, "impressions": 74439, "ctr": 0.002001638925831889, "position": 8.551538843885599}, {"date": "2026-04-12", "clicks": 176, "impressions": 84604, "ctr": 0.002080279892203678, "position": 8.369084204056545}, {"date": "2026-04-13", "clicks": 256, "impressions": 52188, "ctr": 0.004905342224266114, "position": 8.081934544339695}, {"date": "2026-04-14", "clicks": 252, "impressions": 30234, "ctr": 0.008334987100615202, "position": 6.855295362836542}, {"date": "2026-04-15", "clicks": 221, "impressions": 30463, "ctr": 0.0072547024258937075, "position": 7.1823851885894365}, {"date": "2026-04-16", "clicks": 253, "impressions": 34748, "ctr": 0.007280994589616669, "position": 6.425233106941406}, {"date": "2026-04-17", "clicks": 175, "impressions": 29749, "ctr": 0.005882550673972234, "position": 6.760260849104172}, {"date": "2026-04-18", "clicks": 146, "impressions": 28424, "ctr": 0.005136504362510555, "position": 6.845658598367577}, {"date": "2026-04-19", "clicks": 180, "impressions": 27090, "ctr": 0.006644518272425249, "position": 6.857438169066076}, {"date": "2026-04-20", "clicks": 224, "impressions": 35436, "ctr": 0.006321255220679535, "position": 7.346681341009143}, {"date": "2026-04-21", "clicks": 290, "impressions": 30558, "ctr": 0.009490149878918778, "position": 7.230054322926893}, {"date": "2026-04-22", "clicks": 302, "impressions": 43753, "ctr": 0.006902383836536923, "position": 6.597056201860444}, {"date": "2026-04-23", "clicks": 272, "impressions": 31369, "ctr": 0.008670980904714846, "position": 7.710701648123944}, {"date": "2026-04-24", "clicks": 190, "impressions": 22596, "ctr": 0.008408567888121792, "position": 7.730173482032218}, {"date": "2026-04-25", "clicks": 136, "impressions": 23273, "ctr": 0.005843681519357195, "position": 7.3494607485068535}, {"date": "2026-04-26", "clicks": 168, "impressions": 21910, "ctr": 0.0076677316293929714, "position": 7.806983112733912}, {"date": "2026-04-27", "clicks": 225, "impressions": 24200, "ctr": 0.009297520661157025, "position": 7.779834710743802}, {"date": "2026-04-28", "clicks": 195, "impressions": 21757, "ctr": 0.008962632715907524, "position": 7.863400284965758}, {"date": "2026-04-29", "clicks": 190, "impressions": 24834, "ctr": 0.007650801320769912, "position": 7.31569622292019}, {"date": "2026-04-30", "clicks": 192, "impressions": 32201, "ctr": 0.00596254774696438, "position": 10.344181857706282}, {"date": "2026-05-01", "clicks": 159, "impressions": 32955, "ctr": 0.004824761037778789, "position": 7.505628887877409}, {"date": "2026-05-02", "clicks": 123, "impressions": 40617, "ctr": 0.0030282886476106063, "position": 9.152103798901937}, {"date": "2026-05-03", "clicks": 140, "impressions": 34320, "ctr": 0.004079254079254079, "position": 9.790996503496503}, {"date": "2026-05-04", "clicks": 170, "impressions": 31105, "ctr": 0.005465359266998875, "position": 8.261308471306863}, {"date": "2026-05-05", "clicks": 270, "impressions": 41113, "ctr": 0.0065672658283268065, "position": 7.468513608834189}, {"date": "2026-05-06", "clicks": 253, "impressions": 42421, "ctr": 0.005964027250654157, "position": 7.391669220433276}, {"date": "2026-05-07", "clicks": 235, "impressions": 45005, "ctr": 0.0052216420397733585, "position": 7.433062993000778}, {"date": "2026-05-08", "clicks": 341, "impressions": 43814, "ctr": 0.007782900442780846, "position": 8.12226685534304}, {"date": "2026-05-09", "clicks": 197, "impressions": 41872, "ctr": 0.004704814673290027, "position": 7.92751719526175}, {"date": "2026-05-10", "clicks": 209, "impressions": 34011, "ctr": 0.006145070712416571, "position": 8.879156743406545}, {"date": "2026-05-11", "clicks": 423, "impressions": 40631, "ctr": 0.010410770101646526, "position": 7.774236420467131}, {"date": "2026-05-12", "clicks": 1350, "impressions": 56462, "ctr": 0.023909886295207395, "position": 9.628706032375757}, {"date": "2026-05-13", "clicks": 1180, "impressions": 46604, "ctr": 0.025319715045918807, "position": 11.993884645094841}, {"date": "2026-05-14", "clicks": 453, "impressions": 38926, "ctr": 0.011637465961054309, "position": 10.337049786774907}, {"date": "2026-05-15", "clicks": 297, "impressions": 30283, "ctr": 0.00980748274609517, "position": 8.55559224647492}, {"date": "2026-05-16", "clicks": 188, "impressions": 20846, "ctr": 0.009018516741820973, "position": 10.538136812817807}, {"date": "2026-05-17", "clicks": 194, "impressions": 23121, "ctr": 0.008390640543229098, "position": 9.42134855758834}, {"date": "2026-05-18", "clicks": 219, "impressions": 26346, "ctr": 0.008312457299020724, "position": 11.356334927503227}, {"date": "2026-05-19", "clicks": 209, "impressions": 29507, "ctr": 0.0070830650354153256, "position": 11.41820584945945}, {"date": "2026-05-20", "clicks": 215, "impressions": 29074, "ctr": 0.0073949232991676415, "position": 10.073708468047052}, {"date": "2026-05-21", "clicks": 184, "impressions": 34271, "ctr": 0.005368970849989788, "position": 8.062968690729772}, {"date": "2026-05-22", "clicks": 157, "impressions": 29525, "ctr": 0.005317527519051651, "position": 9.938763759525825}, {"date": "2026-05-23", "clicks": 134, "impressions": 28216, "ctr": 0.004749078537000283, "position": 9.457577261128439}, {"date": "2026-05-24", "clicks": 156, "impressions": 34420, "ctr": 0.004532248692620569, "position": 8.54785008715863}, {"date": "2026-05-25", "clicks": 192, "impressions": 28121, "ctr": 0.006827637708474094, "position": 7.151843817787419}], "ma": {"clicks": [436.0, 584.5, 664.0, 1019.5, 1142.2, 1070.0, 1113.2857142857142, 1163.857142857143, 1157.857142857143, 1110.7142857142858, 884.4285714285714, 738.7142857142857, 721.2857142857143, 594.0, 542.7142857142857, 491.57142857142856, 455.42857142857144, 427.42857142857144, 398.14285714285717, 378.85714285714283, 377.7142857142857, 374.14285714285717, 377.7142857142857, 384.7142857142857, 378.42857142857144, 377.14285714285717, 366.7142857142857, 356.57142857142856, 347.42857142857144, 336.0, 325.14285714285717, 328.14285714285717, 327.57142857142856, 329.85714285714283, 323.7142857142857, 323.2857142857143, 323.14285714285717, 324.0, 325.14285714285717, 325.0, 311.14285714285717, 287.85714285714283, 271.42857142857144, 261.14285714285717, 260.85714285714283, 253.71428571428572, 238.0, 230.42857142857142, 232.57142857142858, 231.0, 234.71428571428572, 233.28571428571428, 238.85714285714286, 269.14285714285717, 283.0, 298.85714285714283, 306.2857142857143, 309.7142857142857, 308.2857142857143, 304.2857142857143, 277.57142857142856, 272.42857142857144, 340.57142857142856, 375.7142857142857, 391.85714285714283, 393.0, 396.0, 400.57142857142856, 410.42857142857144, 337.7142857142857, 310.42857142857144, 296.57142857142856, 297.0, 293.7142857142857, 281.85714285714283, 282.57142857142856, 293.14285714285717, 297.42857142857144, 298.7142857142857, 307.57142857142856, 306.0, 315.14285714285717, 304.85714285714283, 306.0, 306.57142857142856, 300.42857142857144, 292.7142857142857, 318.42857142857144, 328.2857142857143, 332.85714285714283, 331.85714285714283, 328.85714285714283, 331.0, 342.42857142857144, 325.42857142857144, 319.7142857142857, 314.7142857142857, 305.0, 301.0, 294.42857142857144, 277.14285714285717, 266.85714285714283, 259.2857142857143, 254.0, 249.42857142857142, 253.0, 265.85714285714283, 265.14285714285717, 261.2857142857143, 256.2857142857143, 252.57142857142858, 246.0, 233.85714285714286, 224.57142857142858, 226.28571428571428, 224.85714285714286, 228.28571428571428, 240.28571428571428, 248.28571428571428, 251.28571428571428, 249.71428571428572, 251.42857142857142, 252.42857142857142, 247.28571428571428, 240.14285714285714, 234.71428571428572, 226.28571428571428, 224.0, 218.28571428571428, 217.28571428571428, 225.71428571428572, 229.0, 236.28571428571428, 262.2857142857143, 266.2857142857143, 263.85714285714283, 258.42857142857144, 248.28571428571428, 249.0, 242.85714285714286, 222.42857142857142, 219.85714285714286, 223.71428571428572, 225.85714285714286, 223.42857142857142, 212.14285714285714, 208.42857142857142, 209.57142857142858, 206.85714285714286, 204.71428571428572, 205.85714285714286, 210.71428571428572, 214.57142857142858, 214.71428571428572, 214.57142857142858, 211.71428571428572, 211.28571428571428, 211.85714285714286, 207.28571428571428, 212.71428571428572, 224.28571428571428, 227.0, 229.14285714285714, 227.71428571428572, 226.0, 226.14285714285714, 212.57142857142858, 196.57142857142858, 185.14285714285714, 180.71428571428572, 178.85714285714286, 174.85714285714286, 167.0, 177.71428571428572, 186.71428571428572, 192.85714285714286, 218.85714285714286, 229.42857142857142, 239.28571428571428, 275.42857142857144, 429.7142857142857, 562.1428571428571, 593.2857142857143, 587.0, 585.7142857142857, 583.5714285714286, 554.4285714285714, 391.42857142857144, 253.57142857142858, 215.14285714285714, 195.14285714285714, 187.42857142857142, 182.0, 178.14285714285714], "impressions": [25583.0, 28433.5, 30172.333333333332, 46215.75, 50838.8, 47505.0, 47591.857142857145, 49083.42857142857, 49152.42857142857, 47693.71428571428, 38220.142857142855, 32913.71428571428, 33231.857142857145, 31041.428571428572, 30029.714285714286, 29455.285714285714, 29201.428571428572, 30442.14285714286, 31196.285714285714, 30552.285714285714, 30114.14285714286, 29857.285714285714, 29188.85714285714, 28818.714285714286, 26306.571428571428, 24271.428571428572, 23353.0, 22209.571428571428, 21304.714285714286, 21309.428571428572, 20770.14285714286, 20582.85714285714, 20475.285714285714, 20414.285714285714, 20235.14285714286, 20873.14285714286, 20535.0, 21052.85714285714, 21711.571428571428, 22698.0, 23250.714285714286, 23128.14285714286, 22019.14285714286, 21537.428571428572, 21406.571428571428, 21033.14285714286, 20167.571428571428, 20232.0, 21419.428571428572, 22252.85714285714, 23695.14285714286, 24249.14285714286, 25267.14285714286, 26710.428571428572, 28940.428571428572, 30486.85714285714, 32272.14285714286, 33352.857142857145, 35357.28571428572, 36807.142857142855, 37751.142857142855, 36977.57142857143, 38138.0, 38908.71428571428, 42229.0, 43056.71428571428, 43533.142857142855, 44317.42857142857, 44636.857142857145, 43328.71428571428, 42479.0, 39102.57142857143, 37921.71428571428, 38201.0, 37454.857142857145, 38984.42857142857, 39914.71428571428, 40816.142857142855, 42317.57142857143, 43286.28571428572, 44059.142857142855, 45135.142857142855, 44337.28571428572, 47005.71428571428, 47233.857142857145, 46003.857142857145, 45100.28571428572, 43305.142857142855, 43188.857142857145, 43189.71428571428, 38822.142857142855, 36543.142857142855, 34451.42857142857, 32347.14285714286, 30445.14285714286, 27716.428571428572, 24929.714285714286, 24024.14285714286, 24576.85714285714, 26049.571428571428, 26814.571428571428, 27376.428571428572, 28155.85714285714, 29839.428571428572, 30967.571428571428, 32296.285714285714, 33433.0, 35206.0, 37775.42857142857, 40685.71428571428, 43295.57142857143, 43694.42857142857, 43009.42857142857, 41684.28571428572, 41048.42857142857, 38911.42857142857, 36488.71428571428, 33940.28571428572, 32957.28571428572, 32863.28571428572, 32238.0, 30719.714285714286, 29504.428571428572, 27888.571428571428, 26841.428571428572, 26091.571428571428, 24879.714285714286, 24696.714285714286, 25016.0, 25695.14285714286, 26279.571428571428, 26388.571428571428, 27075.285714285714, 27397.85714285714, 28061.0, 29038.714285714286, 30323.0, 32034.428571428572, 34464.857142857145, 35600.857142857145, 36470.857142857145, 36746.57142857143, 37001.142857142855, 36945.0, 35662.0, 33391.142857142855, 35534.0, 41418.857142857145, 46802.42857142857, 52762.857142857145, 60032.57142857143, 62837.28571428572, 62751.28571428572, 59632.142857142855, 53736.0, 48060.71428571428, 41487.142857142855, 33270.857142857145, 30877.714285714286, 30924.0, 32822.57142857143, 32339.85714285714, 31318.0, 30582.14285714286, 29842.14285714286, 28237.0, 26979.714285714286, 24277.0, 24395.85714285714, 25875.714285714286, 28353.428571428572, 30126.285714285714, 31112.714285714286, 33877.857142857145, 36390.28571428572, 38219.42857142857, 39770.71428571428, 39950.0, 39905.857142857145, 41266.71428571428, 43459.42857142857, 44057.0, 43188.57142857143, 41255.57142857143, 38251.857142857145, 36696.142857142855, 34655.42857142857, 30804.714285714286, 28300.428571428572, 27635.428571428572, 27527.14285714286, 28580.0, 30194.14285714286, 30447.714285714286], "ctr": [0.01704256732986749, 0.020236537468795144, 0.021643575746903548, 0.02176020814939713, 0.022118901976960984, 0.02226451932161459, 0.02316058596792983, 0.023858765572434975, 0.023618997730808982, 0.023129807478099288, 0.02252961298292994, 0.021885594478139276, 0.02113722001699387, 0.019161091733083724, 0.018155667177291644, 0.016762752500542395, 0.015340750908479852, 0.013972964810201704, 0.012807910010134265, 0.012532926712510264, 0.012711287494764625, 0.01272063210710834, 0.013223243100996892, 0.013805327272392134, 0.014571157088997031, 0.015470305437496256, 0.015656029376008483, 0.01602904594666834, 0.01624006617210471, 0.01574215547186415, 0.015566628416941222, 0.015878911649615444, 0.015935757579034544, 0.01608924822898165, 0.015951516738800263, 0.015519734700578023, 0.015709122040470768, 0.015373298025066864, 0.014957881598326823, 0.0143625199592898, 0.013427032836401013, 0.01234888286034144, 0.012260106605923507, 0.012038354057038136, 0.012106606431735873, 0.01199062901914781, 0.011814625346711603, 0.011494768470194918, 0.011143848024923117, 0.01061995221590382, 0.01013496357927346, 0.009764562148688325, 0.009511852722749225, 0.00989200503426099, 0.009720466589818755, 0.009826582460187649, 0.009579428211965913, 0.009417711419880013, 0.008849986898552752, 0.008335930917855254, 0.00731834914338421, 0.007351826866397365, 0.008599583401164956, 0.00931358840362523, 0.009175722827681474, 0.009094265419125159, 0.009088407537901752, 0.009055808129506408, 0.009241973139633987, 0.007905631726352684, 0.007430815229628966, 0.007646491257857857, 0.007832862615563404, 0.0077108366063911036, 0.007555295073393964, 0.007266353293925811, 0.007343045336849521, 0.007249587004041597, 0.007017765706518209, 0.007088173375141747, 0.00695990285613951, 0.007007006938451346, 0.006912496414520514, 0.006580384860371271, 0.006549179794340593, 0.006589884677900652, 0.006541238958960048, 0.007526065577453609, 0.007752412789990483, 0.007857175964860751, 0.008627756238424345, 0.009203127995395582, 0.009921083435829913, 0.011216847244138722, 0.011473490795473556, 0.01208202741932424, 0.012777562670907723, 0.012798397687128732, 0.012452716979732483, 0.011721949326468039, 0.010535342738741302, 0.009839727632145067, 0.009318950625904847, 0.008576592493411205, 0.008059644405489112, 0.007825733546194383, 0.007964803904047446, 0.007602896348465898, 0.0069977496397225555, 0.006420940876404493, 0.005991910851837587, 0.005727284437610429, 0.005543409176412392, 0.005559051162701193, 0.005701926271310385, 0.005991870626744378, 0.006407529695108283, 0.007052251064707798, 0.007518823245023757, 0.007623123539165201, 0.007740350686929214, 0.008208030185948711, 0.00865190979903335, 0.00894514742785842, 0.009023364863146047, 0.009085286992243941, 0.009115180616559556, 0.009084788094941117, 0.008729931924513448, 0.008427252304910496, 0.008517523457706148, 0.008593123532703811, 0.008614425500643818, 0.00943143119960651, 0.009385744355834669, 0.009105185755618929, 0.008659730576646098, 0.007983370662701285, 0.007475409900632568, 0.007010745469315246, 0.0060860211217478866, 0.0059377544996445444, 0.006021190770045979, 0.00609221617771616, 0.0062443853652807925, 0.006357455046685953, 0.006016174691282974, 0.005484417093400855, 0.004923739914019886, 0.004493568652677756, 0.004078923282296331, 0.0038055108861797964, 0.003953842438514593, 0.004389265319277933, 0.004952095683251138, 0.005391499404628499, 0.005839337324154023, 0.00649137137847139, 0.006693644663673308, 0.006858667917716675, 0.006808336690665706, 0.00700690616425116, 0.0073677657662725255, 0.007468791074393474, 0.007614964411103148, 0.008040145188314219, 0.007964785593598325, 0.00807170237706018, 0.007684783354524399, 0.007172810947332542, 0.006770611965654458, 0.006257972315634616, 0.005710520687897737, 0.00536832541824335, 0.005127357693941099, 0.005021514021485239, 0.0054441053650569615, 0.005683609083011165, 0.00597872574489152, 0.0066852130069840416, 0.009162730216538411, 0.01192782847300479, 0.012844374747473497, 0.013133600790804114, 0.013749843943451393, 0.014070639633567469, 0.013770880661763782, 0.011367049053222058, 0.008806364517971892, 0.007910865216391245, 0.0072694430410993145, 0.0066595232975535015, 0.006108324461752283, 0.0058962073773884795], "position": [8.422741664386507, 8.386396404370725, 8.154982446895986, 17.560545549902873, 22.817417126772337, 20.676894823181556, 19.324045606225837, 19.650336627616895, 19.764052682000717, 20.021984151076712, 14.829051477911364, 9.940661397331622, 9.869106534879672, 9.676363438125415, 9.489617569845137, 9.77786154547196, 9.465190034775846, 12.2981863816987, 13.504998200036793, 13.617933557369422, 13.609806835730783, 13.967978095938877, 14.259144116459073, 15.16619485360979, 12.416859914172305, 11.376973533296214, 11.6009305701399, 11.559289486798777, 11.401250055453659, 10.886644837114535, 10.431784495358466, 10.748468578210025, 10.593563846947017, 10.597448903227797, 10.883126557915165, 10.970516368217352, 11.186124906209047, 10.994354893257945, 11.253947845394697, 12.232504222662827, 12.77548843585974, 12.453936470030362, 12.17351604846352, 11.906566334511675, 11.988002728343728, 11.629666548642533, 10.54021738243497, 9.509242552821155, 9.323938243893902, 9.205005745028652, 8.96963949952995, 8.693866093207715, 8.130956924786169, 8.216846957303373, 8.14825541936433, 8.3087708634132, 8.302073650192154, 8.642569354637507, 8.88973628549357, 9.376257775743671, 9.58052156473963, 9.569986490440348, 9.43840597925528, 9.934270208357916, 9.919651556600636, 9.998954593872355, 9.990107255364581, 10.206749764793944, 10.478115729664708, 10.758948278136847, 10.59570277265025, 10.796439799491939, 10.969455350172, 10.605492898862769, 10.217383901023993, 9.960198167766736, 9.859154888985973, 9.50255434457678, 9.228443113598841, 8.976934514153694, 9.128379317131849, 9.051155226251854, 8.85346456461598, 8.315488101143009, 8.14760344084087, 7.9335851512626645, 7.6052273104347154, 7.350223327007785, 7.145360291971415, 7.245762766723213, 7.777389669896588, 8.134849897181448, 8.207766037634958, 8.347708874116373, 8.435736824899124, 8.407141553507744, 8.523718234188747, 8.342398887408665, 7.989238816641053, 7.754131451579593, 7.766694756200178, 7.790633062053783, 7.6604477793682335, 7.4214197909287085, 7.295692731074297, 7.32610445543721, 7.3922829848803895, 7.1675043181545055, 6.876970635422441, 6.800942420142171, 6.6952426876736775, 6.575657092320019, 6.378125915096896, 6.222979855670228, 6.082176448400564, 6.0430561795023845, 6.066788004241948, 6.097135788414076, 6.103647198483996, 6.058652567798853, 6.07105860699428, 6.119802604662873, 6.174672038421063, 6.22974091054295, 6.320484345717766, 6.366181972839568, 6.468665803313827, 6.5162461526610915, 6.5364210971682635, 6.49649469383002, 6.420018124703703, 6.396018870769203, 6.354673947616779, 6.26109498332458, 6.165891565692645, 6.099790560356096, 6.060353038512647, 6.0482834071615486, 5.978549772691716, 5.927222267793242, 5.952536471714484, 5.990763879103755, 5.984382177723836, 5.961360155987149, 5.93382880933334, 5.990968331872495, 5.967044053326347, 6.047288720192663, 6.286912414767671, 6.695358892753808, 7.060628637614114, 7.374380657672384, 7.453466734282411, 7.6308634115232845, 7.60970505870497, 7.460818871393342, 7.217121693462197, 7.0011722598921295, 6.896136087987764, 6.949673082286386, 6.866054655610816, 7.049693018636893, 7.188251966198043, 7.260223701932225, 7.395872979599058, 7.457752032418296, 7.5482300269952765, 7.650892887146668, 8.027104345658431, 7.995026546493458, 8.252546982264183, 8.53597746665884, 8.604759432453564, 8.548347050149053, 8.559200335508065, 8.143326211978708, 8.231417350188083, 8.056476406810914, 7.92621358394092, 7.856631862392388, 8.165230780041183, 8.822690126421406, 9.237545382674853, 9.299449009979408, 9.672394669630274, 9.749850643084814, 10.261579001232828, 10.517221832244784, 10.242910949809385, 9.918042221802938, 10.115638152238782, 9.961272501997444, 9.836487006221772, 9.235845419119512]}, "monthly": [{"month": "2025-11", "campaigns": null, "days": 18, "clicks_per_day": 736.7222222222222, "imps_per_day": 36972.166666666664, "ctr": 0.019926401091511784, "position": 19.33082994865507, "total_clicks": 13261, "total_impressions": 665499, "clicks_delta": null, "imps_delta": null, "ctr_delta": null, "pos_delta": null}, {"month": "2025-12", "campaigns": null, "days": 31, "clicks_per_day": 314.16129032258067, "imps_per_day": 22731.58064516129, "ctr": 0.013820477125045588, "position": 11.423380007067047, "total_clicks": 9739, "total_impressions": 704679, "clicks_delta": -0.5735688691798165, "imps_delta": -0.3851704486214055, "ctr_delta": -0.30642382126229445, "pos_delta": -7.9074499415880215}, {"month": "2026-01", "campaigns": null, "days": 31, "clicks_per_day": 315.8709677419355, "imps_per_day": 38388.41935483871, "ctr": 0.008228287932936765, "position": 9.599891096189124, "total_clicks": 9792, "total_impressions": 1190041, "clicks_delta": 0.005442037170140607, "imps_delta": 0.6887703479172786, "ctr_delta": -0.40463068977369887, "pos_delta": -1.8234889108779235}, {"month": "2026-02", "campaigns": null, "days": 28, "clicks_per_day": 294.35714285714283, "imps_per_day": 34867.0, "ctr": 0.008442284763734846, "position": 7.624644055574448, "total_clicks": 8242, "total_impressions": 976276, "clicks_delta": -0.0681095354808591, "imps_delta": -0.09173129329157573, "ctr_delta": 0.026007455322689815, "pos_delta": -1.9752470406146756}, {"month": "2026-03", "campaigns": null, "days": 31, "clicks_per_day": 239.19354838709677, "imps_per_day": 32359.25806451613, "ctr": 0.0073918118861132625, "position": 6.157039367504139, "total_clicks": 7415, "total_impressions": 1003137, "clicks_delta": -0.18740362110668404, "imps_delta": -0.07192307727891334, "ctr_delta": -0.12442992708964921, "pos_delta": -1.4676046880703089}, {"month": "2026-04", "campaigns": null, "days": 30, "clicks_per_day": 211.53333333333333, "imps_per_day": 37845.26666666667, "ctr": 0.0055894264188035845, "position": 7.180442644522697, "total_clicks": 6346, "total_impressions": 1135358, "clicks_delta": -0.11563946954371768, "imps_delta": 0.16953443713736685, "ctr_delta": -0.2438354080270571, "pos_delta": 1.0234032770185575}, {"month": "2026-05", "campaigns": null, "days": 25, "clicks_per_day": 305.92, "imps_per_day": 35343.44, "ctr": 0.008655637368631916, "position": 8.980943564067335, "total_clicks": 7648, "total_impressions": 883586, "clicks_delta": 0.44620233217774985, "imps_delta": -0.06610672580807113, "ctr_delta": 0.5485734528167656, "pos_delta": 1.8005009195446382}], "this_week": {"clicks": 1247, "impressions": 213134, "ctr": 0.005850779321928928, "position": 9.204336239173477}, "last_week": {"clicks": 3881, "impressions": 242588, "ctr": 0.015998318136099064, "position": 10.308799281085626}, "wow": {"clicks_delta": -0.6786910590054109, "imps_delta": -0.12141573367190463, "ctr_delta": -0.6342878500004908, "pos_delta": -1.1044630419121493}, "clean_baseline": {"days": 31, "excluded": 0, "clicks_per_day": 282.38709677419354, "imps_per_day": 33282.6129032258, "ctr": 0.008484523062996178, "position": 8.869939840718926}, "branded": {"queries": 123, "clicks": 4794, "impressions": 41105, "ctr": 0.11662814742732028, "position": 6.424133317114706}, "non_branded": {"queries": 48, "clicks": 325, "impressions": 22952, "ctr": 0.014159986057859881, "position": 7.87364935517602}, "non_branded_clean": {"queries": 48, "clicks": 325, "impressions": 22952, "ctr": 0.014159986057859881, "position": 7.87364935517602}, "clusters": [{"name": "Brand Core", "queries": 33, "clicks": 1764, "impressions": 14488, "ctr": 0.1217559359469906, "position": 5.764632799558255}, {"name": "DeFi & Ecosystem", "queries": 37, "clicks": 1514, "impressions": 8292, "ctr": 0.1825856246985046, "position": 7.466835504100338}, {"name": "Bridge & Wallet", "queries": 17, "clicks": 801, "impressions": 3777, "ctr": 0.21207307386814933, "position": 9.489541964522108}, {"name": "Explorer & Tools", "queries": 16, "clicks": 404, "impressions": 2190, "ctr": 0.18447488584474886, "position": 7.458904109589041}, {"name": "STRK Token", "queries": 19, "clicks": 268, "impressions": 17168, "ctr": 0.015610438024231128, "position": 6.7977050326188255}, {"name": "Staking & Earn", "queries": 10, "clicks": 152, "impressions": 1907, "ctr": 0.07970634504457262, "position": 5.7425275301520715}, {"name": "Grants & Community", "queries": 10, "clicks": 67, "impressions": 355, "ctr": 0.18873239436619718, "position": 2.2422535211267607}, {"name": "Cairo & Dev", "queries": 8, "clicks": 59, "impressions": 461, "ctr": 0.1279826464208243, "position": 5.611713665943601}, {"name": "Other", "queries": 10, "clicks": 51, "impressions": 13814, "ctr": 0.003691906761256696, "position": 7.779861010568988}, {"name": "Educational", "queries": 8, "clicks": 33, "impressions": 1396, "ctr": 0.02363896848137536, "position": 4.9777936962750715}, {"name": "Privacy & ZK", "queries": 3, "clicks": 6, "impressions": 209, "ctr": 0.028708133971291867, "position": 8.196172248803828}], "quick_wins": [{"query": "strk", "clicks": 46, "impressions": 9512, "ctr": 0.004835996635828428, "position": 7.501051303616484, "expected_ctr": 0.028, "lost_clicks": 220.34}, {"query": "snos", "clicks": 18, "impressions": 9961, "ctr": 0.0018070474851922499, "position": 8.59020178696918, "expected_ctr": 0.022, "lost_clicks": 201.14}, {"query": "stark", "clicks": 5, "impressions": 5470, "ctr": 0.0009140767824497258, "position": 9.859597806215723, "expected_ctr": 0.018, "lost_clicks": 93.46}, {"query": "strk token", "clicks": 15, "impressions": 1484, "ctr": 0.010107816711590296, "position": 5.499326145552561, "expected_ctr": 0.06, "lost_clicks": 74.04}, {"query": "starknet coin", "clicks": 49, "impressions": 1893, "ctr": 0.025884838880084523, "position": 5.097200211304807, "expected_ctr": 0.06, "lost_clicks": 64.58}, {"query": "amm", "clicks": 1, "impressions": 2822, "ctr": 0.00035435861091424523, "position": 10.41566265060241, "expected_ctr": 0.018, "lost_clicks": 49.8}, {"query": "stargate bridge", "clicks": 3, "impressions": 917, "ctr": 0.003271537622682661, "position": 5.544165757906216, "expected_ctr": 0.045, "lost_clicks": 38.27}, {"query": "strk coin", "clicks": 25, "impressions": 1706, "ctr": 0.014654161781946073, "position": 7.544548651817116, "expected_ctr": 0.028, "lost_clicks": 22.77}, {"query": "strk crypto", "clicks": 12, "impressions": 566, "ctr": 0.02120141342756184, "position": 4.57243816254417, "expected_ctr": 0.06, "lost_clicks": 21.96}, {"query": "strak", "clicks": 2, "impressions": 680, "ctr": 0.0029411764705882353, "position": 8.333823529411765, "expected_ctr": 0.028, "lost_clicks": 17.04}, {"query": "starkware", "clicks": 2, "impressions": 608, "ctr": 0.003289473684210526, "position": 7.911184210526316, "expected_ctr": 0.028, "lost_clicks": 15.02}, {"query": "stark coin", "clicks": 4, "impressions": 315, "ctr": 0.012698412698412698, "position": 5.526984126984127, "expected_ctr": 0.045, "lost_clicks": 10.18}, {"query": "snos -198", "clicks": 3, "impressions": 353, "ctr": 0.0084985835694051, "position": 6.688385269121813, "expected_ctr": 0.035, "lost_clicks": 9.36}, {"query": "btc staking", "clicks": 5, "impressions": 484, "ctr": 0.010330578512396695, "position": 8.464876033057852, "expected_ctr": 0.028, "lost_clicks": 8.55}, {"query": "game web3", "clicks": 3, "impressions": 288, "ctr": 0.010416666666666666, "position": 7.322916666666667, "expected_ctr": 0.035, "lost_clicks": 7.08}, {"query": "amm full form", "clicks": 1, "impressions": 236, "ctr": 0.00423728813559322, "position": 9.309322033898304, "expected_ctr": 0.022, "lost_clicks": 4.19}, {"query": "starknet token", "clicks": 29, "impressions": 939, "ctr": 0.0308839190628328, "position": 7.465388711395101, "expected_ctr": 0.035, "lost_clicks": 3.87}, {"query": "zkps", "clicks": 2, "impressions": 167, "ctr": 0.011976047904191617, "position": 7.1017964071856285, "expected_ctr": 0.035, "lost_clicks": 3.85}, {"query": "stake btc", "clicks": 5, "impressions": 146, "ctr": 0.03424657534246575, "position": 5.410958904109589, "expected_ctr": 0.06, "lost_clicks": 3.76}, {"query": "starkbet", "clicks": 5, "impressions": 101, "ctr": 0.04950495049504951, "position": 4.227722772277228, "expected_ctr": 0.08, "lost_clicks": 3.08}, {"query": "account abstraction", "clicks": 2, "impressions": 426, "ctr": 0.004694835680751174, "position": 11.612676056338028, "expected_ctr": 0.01, "lost_clicks": 2.26}, {"query": "atomiq", "clicks": 2, "impressions": 184, "ctr": 0.010869565217391304, "position": 9.125, "expected_ctr": 0.022, "lost_clicks": 2.05}, {"query": "ready wallet", "clicks": 4, "impressions": 269, "ctr": 0.01486988847583643, "position": 8.657992565055762, "expected_ctr": 0.022, "lost_clicks": 1.92}, {"query": "amms", "clicks": 1, "impressions": 264, "ctr": 0.003787878787878788, "position": 13.121212121212121, "expected_ctr": 0.009, "lost_clicks": 1.38}, {"query": "staking btc", "clicks": 3, "impressions": 136, "ctr": 0.022058823529411766, "position": 7.735294117647059, "expected_ctr": 0.028, "lost_clicks": 0.81}, {"query": "bitcoin yield", "clicks": 3, "impressions": 196, "ctr": 0.015306122448979591, "position": 9.98469387755102, "expected_ctr": 0.018, "lost_clicks": 0.53}], "ctr_underperformers": [{"query": "starknet official website", "clicks": 2, "impressions": 178, "ctr": 0.011235955056179775, "position": 1, "expected_ctr": 0.275, "ratio": 0.040858018386108266}, {"query": "stark", "clicks": 5, "impressions": 5470, "ctr": 0.0009140767824497258, "position": 9.859597806215723, "expected_ctr": 0.018, "ratio": 0.05078204346942922}, {"query": "web3 games", "clicks": 8, "impressions": 1608, "ctr": 0.004975124378109453, "position": 3.5889303482587063, "expected_ctr": 0.08, "ratio": 0.062189054726368154}, {"query": "stargate bridge", "clicks": 3, "impressions": 917, "ctr": 0.003271537622682661, "position": 5.544165757906216, "expected_ctr": 0.045, "ratio": 0.07270083605961469}, {"query": "blockchain decentralization", "clicks": 4, "impressions": 186, "ctr": 0.021505376344086023, "position": 1.4623655913978495, "expected_ctr": 0.275, "ratio": 0.07820136852394917}, {"query": "snos", "clicks": 18, "impressions": 9961, "ctr": 0.0018070474851922499, "position": 8.59020178696918, "expected_ctr": 0.022, "ratio": 0.08213852205419318}, {"query": "strak", "clicks": 2, "impressions": 680, "ctr": 0.0029411764705882353, "position": 8.333823529411765, "expected_ctr": 0.028, "ratio": 0.10504201680672269}, {"query": "starkware", "clicks": 2, "impressions": 608, "ctr": 0.003289473684210526, "position": 7.911184210526316, "expected_ctr": 0.028, "ratio": 0.11748120300751878}, {"query": "what is decentralization in blockchain", "clicks": 5, "impressions": 143, "ctr": 0.03496503496503497, "position": 1.1888111888111887, "expected_ctr": 0.275, "ratio": 0.12714558169103624}, {"query": "decentralized meaning in blockchain", "clicks": 5, "impressions": 127, "ctr": 0.03937007874015748, "position": 1.3622047244094488, "expected_ctr": 0.275, "ratio": 0.14316392269148173}, {"query": "strkbtc starknet", "clicks": 9, "impressions": 367, "ctr": 0.02452316076294278, "position": 2.2861035422343323, "expected_ctr": 0.155, "ratio": 0.15821394040608244}, {"query": "starknet (strk)", "clicks": 2, "impressions": 79, "ctr": 0.02531645569620253, "position": 2.0759493670886076, "expected_ctr": 0.155, "ratio": 0.16333197223356472}, {"query": "strk token", "clicks": 15, "impressions": 1484, "ctr": 0.010107816711590296, "position": 5.499326145552561, "expected_ctr": 0.06, "ratio": 0.16846361185983827}, {"query": "strk", "clicks": 46, "impressions": 9512, "ctr": 0.004835996635828428, "position": 7.501051303616484, "expected_ctr": 0.028, "ratio": 0.17271416556530098}, {"query": "layer 2 scaling solutions", "clicks": 3, "impressions": 152, "ctr": 0.019736842105263157, "position": 3.0197368421052633, "expected_ctr": 0.11, "ratio": 0.17942583732057416}, {"query": "amm full form", "clicks": 1, "impressions": 236, "ctr": 0.00423728813559322, "position": 9.309322033898304, "expected_ctr": 0.022, "ratio": 0.1926040061633282}, {"query": "strk starknet", "clicks": 4, "impressions": 121, "ctr": 0.03305785123966942, "position": 2.355371900826446, "expected_ctr": 0.155, "ratio": 0.21327645961077046}, {"query": "starkzap", "clicks": 2, "impressions": 59, "ctr": 0.03389830508474576, "position": 2.3559322033898304, "expected_ctr": 0.155, "ratio": 0.21869874248223073}, {"query": "web3 ambassador program", "clicks": 2, "impressions": 59, "ctr": 0.03389830508474576, "position": 2.4406779661016946, "expected_ctr": 0.155, "ratio": 0.21869874248223073}, {"query": "snos -198", "clicks": 3, "impressions": 353, "ctr": 0.0084985835694051, "position": 6.688385269121813, "expected_ctr": 0.035, "ratio": 0.24281667341157426}, {"query": "decentralization in blockchain", "clicks": 9, "impressions": 224, "ctr": 0.04017857142857143, "position": 1.8928571428571428, "expected_ctr": 0.155, "ratio": 0.25921658986175117}, {"query": "stark coin", "clicks": 4, "impressions": 315, "ctr": 0.012698412698412698, "position": 5.526984126984127, "expected_ctr": 0.045, "ratio": 0.2821869488536155}, {"query": "game web3", "clicks": 3, "impressions": 288, "ctr": 0.010416666666666666, "position": 7.322916666666667, "expected_ctr": 0.035, "ratio": 0.29761904761904756}, {"query": "what is starknet", "clicks": 3, "impressions": 121, "ctr": 0.024793388429752067, "position": 3.884297520661157, "expected_ctr": 0.08, "ratio": 0.30991735537190085}, {"query": "starknet news", "clicks": 17, "impressions": 352, "ctr": 0.048295454545454544, "position": 2.3835227272727275, "expected_ctr": 0.155, "ratio": 0.31158357771260997}, {"query": "\uc2a4\ud0c0\ud06c\ub137", "clicks": 13, "impressions": 497, "ctr": 0.026156941649899398, "position": 3.738430583501006, "expected_ctr": 0.08, "ratio": 0.3269617706237425}, {"query": "starknet foundation", "clicks": 8, "impressions": 214, "ctr": 0.037383177570093455, "position": 3.2803738317757007, "expected_ctr": 0.11, "ratio": 0.33984706881903143}, {"query": "zkps", "clicks": 2, "impressions": 167, "ctr": 0.011976047904191617, "position": 7.1017964071856285, "expected_ctr": 0.035, "ratio": 0.3421727972626176}, {"query": "ekubo starknet", "clicks": 2, "impressions": 72, "ctr": 0.027777777777777776, "position": 3.7777777777777777, "expected_ctr": 0.08, "ratio": 0.3472222222222222}, {"query": "strk crypto", "clicks": 12, "impressions": 566, "ctr": 0.02120141342756184, "position": 4.57243816254417, "expected_ctr": 0.06, "ratio": 0.35335689045936397}, {"query": "stark token", "clicks": 3, "impressions": 76, "ctr": 0.039473684210526314, "position": 2.513157894736842, "expected_ctr": 0.11, "ratio": 0.3588516746411483}, {"query": "starknet logo", "clicks": 8, "impressions": 80, "ctr": 0.1, "position": 1, "expected_ctr": 0.275, "ratio": 0.36363636363636365}, {"query": "btc staking", "clicks": 5, "impressions": 484, "ctr": 0.010330578512396695, "position": 8.464876033057852, "expected_ctr": 0.028, "ratio": 0.3689492325855962}, {"query": "starknet coin", "clicks": 49, "impressions": 1893, "ctr": 0.025884838880084523, "position": 5.097200211304807, "expected_ctr": 0.06, "ratio": 0.43141398133474207}, {"query": "\u0441\u0442\u0430\u0440\u043a\u043d\u0435\u0442", "clicks": 12, "impressions": 232, "ctr": 0.05172413793103448, "position": 2.5775862068965516, "expected_ctr": 0.11, "ratio": 0.4702194357366771}, {"query": "starknet forum", "clicks": 6, "impressions": 80, "ctr": 0.075, "position": 2.425, "expected_ctr": 0.155, "ratio": 0.48387096774193544}, {"query": "atomiq", "clicks": 2, "impressions": 184, "ctr": 0.010869565217391304, "position": 9.125, "expected_ctr": 0.022, "ratio": 0.4940711462450593}], "cannibalisation": {"starknet wallet": {"pages": [{"url": "https://www.starknet.io/wallets/", "clicks": 438, "impressions": 1113, "ctr": 0.3935, "position": 2.47}, {"url": "https://www.starknet.io/", "clicks": 20, "impressions": 972, "ctr": 0.0206, "position": 5.84}, {"url": "https://www.starknet.io/blog/getting-started-using-starknet-setting-up-a-starknet-wallet/", "clicks": 7, "impressions": 640, "ctr": 0.0109, "position": 15.06}]}, "starknet staking": {"pages": [{"url": "https://www.starknet.io/staking/", "clicks": 24, "impressions": 112, "ctr": 0.2143, "position": 1.74}, {"url": "https://docs.starknet.io/learn/protocol/staking", "clicks": 5, "impressions": 94, "ctr": 0.0532, "position": 1.72}, {"url": "https://www.starknet.io/starknet-defi/", "clicks": 2, "impressions": 54, "ctr": 0.037, "position": 7.54}]}, "account abstraction": {"pages": [{"url": "https://www.starknet.io/blog/account-abstraction/", "clicks": 4, "impressions": 1816, "ctr": 0.0022, "position": 11.08}, {"url": "https://www.starknet.io/blog/account-abstraction/native-account-abstraction/", "clicks": 0, "impressions": 268, "ctr": 0, "position": 16.64}, {"url": "https://docs.starknet.io/learn/protocol/accounts", "clicks": 0, "impressions": 73, "ctr": 0, "position": 4.58}]}}, "top_pages": [{"url": "https://www.starknet.io/", "clicks": 432, "impressions": 21629, "ctr": 0.02, "position": 6.82, "clicks_delta": -0.48693586698337293}, {"url": "https://starkgate.starknet.io/", "clicks": 83, "impressions": 2436, "ctr": 0.034, "position": 7.38, "clicks_delta": -0.15306122448979592}, {"url": "https://www.starknet.io/wallets/", "clicks": 59, "impressions": 3479, "ctr": 0.017, "position": 7.31, "clicks_delta": -0.87117903930131}, {"url": "https://www.starknet.io/block-explorers-monitoring-tools/", "clicks": 58, "impressions": 698, "ctr": 0.083, "position": 5.33, "clicks_delta": -0.672316384180791}, {"url": "https://www.starknet.io/staking/", "clicks": 44, "impressions": 10170, "ctr": 0.0043, "position": 5.09, "clicks_delta": -0.37142857142857144}, {"url": "https://strkbtc.starknet.io/faucet", "clicks": 37, "impressions": 378, "ctr": 0.098, "position": 8.46, "clicks_delta": -0.9698942229454841}, {"url": "https://www.starknet.io/glossary/what-is-decentralization-in-blockchain/", "clicks": 25, "impressions": 3288, "ctr": 0.0076, "position": 9.67, "clicks_delta": null}, {"url": "https://strkbtc.starknet.io/", "clicks": 23, "impressions": 325, "ctr": 0.071, "position": 5.64, "clicks_delta": -0.8715083798882681}, {"url": "https://www.starknet.io/starknet-defi/", "clicks": 20, "impressions": 4359, "ctr": 0.0046, "position": 6.12, "clicks_delta": null}, {"url": "https://www.starknet.io/bridges-and-onramps/", "clicks": 19, "impressions": 536, "ctr": 0.035, "position": 22.93, "clicks_delta": -0.7205882352941176}], "queries": [{"query": "starknet", "clicks": 1407, "impressions": 5290, "ctr": 0.2659735349716446, "position": 2.7754253308128547}, {"query": "https://strkbtc.starknet.io/faucet", "clicks": 771, "impressions": 1213, "ctr": 0.6356141797197032, "position": 1.001648804616653}, {"query": "starknet wallet", "clicks": 371, "impressions": 1167, "ctr": 0.31790916880891174, "position": 15.765209940017138}, {"query": "strkbtc", "clicks": 275, "impressions": 778, "ctr": 0.35347043701799485, "position": 1.8226221079691518}, {"query": "starknet bridge", "clicks": 171, "impressions": 515, "ctr": 0.3320388349514563, "position": 8.959223300970873}, {"query": "starknet explorer", "clicks": 125, "impressions": 704, "ctr": 0.17755681818181818, "position": 3.78125}, {"query": "strkbtc.starknet.io/faucet", "clicks": 113, "impressions": 222, "ctr": 0.509009009009009, "position": 1.2117117117117118}, {"query": "starknet scan", "clicks": 102, "impressions": 415, "ctr": 0.2457831325301205, "position": 4.028915662650602}, {"query": "starknet crypto", "clicks": 87, "impressions": 669, "ctr": 0.13004484304932734, "position": 3.0343796711509716}, {"query": "strkbtc faucet", "clicks": 87, "impressions": 121, "ctr": 0.71900826446281, "position": 1.2066115702479339}, {"query": "starkgate", "clicks": 85, "impressions": 206, "ctr": 0.41262135922330095, "position": 3.063106796116505}, {"query": "starkscan", "clicks": 79, "impressions": 250, "ctr": 0.316, "position": 2.004}, {"query": "earn stark", "clicks": 74, "impressions": 914, "ctr": 0.08096280087527352, "position": 3.6192560175054704}, {"query": "starknet wallet extension", "clicks": 70, "impressions": 197, "ctr": 0.3553299492385787, "position": 1.4467005076142132}, {"query": "starknet coin", "clicks": 49, "impressions": 1893, "ctr": 0.025884838880084523, "position": 5.097200211304807}, {"query": "strk", "clicks": 46, "impressions": 9512, "ctr": 0.004835996635828428, "position": 7.501051303616484}, {"query": "free strkbtc", "clicks": 45, "impressions": 55, "ctr": 0.8181818181818182, "position": 1.2545454545454544}, {"query": "cairo book", "clicks": 41, "impressions": 186, "ctr": 0.22043010752688172, "position": 2.5161290322580645}, {"query": "http://strkbtc.starknet.io/faucet", "clicks": 33, "impressions": 39, "ctr": 0.8461538461538461, "position": 1}, {"query": "starknet rpc", "clicks": 31, "impressions": 319, "ctr": 0.09717868338557993, "position": 19.100313479623825}, {"query": "starknet staking", "clicks": 31, "impressions": 129, "ctr": 0.24031007751937986, "position": 11.852713178294573}, {"query": "starknet token", "clicks": 29, "impressions": 939, "ctr": 0.0308839190628328, "position": 7.465388711395101}, {"query": "strk20", "clicks": 28, "impressions": 79, "ctr": 0.35443037974683544, "position": 1.3291139240506329}, {"query": "strk btc", "clicks": 26, "impressions": 128, "ctr": 0.203125, "position": 3.7890625}, {"query": "starknet swap", "clicks": 25, "impressions": 58, "ctr": 0.43103448275862066, "position": 1.0172413793103448}, {"query": "strk coin", "clicks": 25, "impressions": 1706, "ctr": 0.014654161781946073, "position": 7.544548651817116}, {"query": "strknet", "clicks": 25, "impressions": 65, "ctr": 0.38461538461538464, "position": 1.0615384615384615}, {"query": "starkgate bridge", "clicks": 23, "impressions": 41, "ctr": 0.5609756097560976, "position": 2.951219512195122}, {"query": "stark net", "clicks": 22, "impressions": 195, "ctr": 0.11282051282051282, "position": 4.092307692307692}, {"query": "strk wallet", "clicks": 22, "impressions": 60, "ctr": 0.36666666666666664, "position": 1.8166666666666667}, {"query": "starknet grants", "clicks": 20, "impressions": 37, "ctr": 0.5405405405405406, "position": 1}, {"query": "snos", "clicks": 18, "impressions": 9961, "ctr": 0.0018070474851922499, "position": 8.59020178696918}, {"query": "starknet discord", "clicks": 18, "impressions": 71, "ctr": 0.2535211267605634, "position": 4.732394366197183}, {"query": "starknet.io", "clicks": 18, "impressions": 26, "ctr": 0.6923076923076923, "position": 1}, {"query": "starknet faucet", "clicks": 17, "impressions": 266, "ctr": 0.06390977443609022, "position": 8.63533834586466}, {"query": "starknet news", "clicks": 17, "impressions": 352, "ctr": 0.048295454545454544, "position": 2.3835227272727275}, {"query": "straknet", "clicks": 16, "impressions": 39, "ctr": 0.41025641025641024, "position": 1.0769230769230769}, {"query": "strk token", "clicks": 15, "impressions": 1484, "ctr": 0.010107816711590296, "position": 5.499326145552561}, {"query": "starkbtc", "clicks": 14, "impressions": 33, "ctr": 0.42424242424242425, "position": 1.7878787878787878}, {"query": "bridge starknet", "clicks": 13, "impressions": 28, "ctr": 0.4642857142857143, "position": 1}, {"query": "\uc2a4\ud0c0\ud06c\ub137", "clicks": 13, "impressions": 497, "ctr": 0.026156941649899398, "position": 3.738430583501006}, {"query": "starknet dex", "clicks": 12, "impressions": 39, "ctr": 0.3076923076923077, "position": 2.0256410256410255}, {"query": "starknet docs", "clicks": 12, "impressions": 63, "ctr": 0.19047619047619047, "position": 1}, {"query": "strk crypto", "clicks": 12, "impressions": 566, "ctr": 0.02120141342756184, "position": 4.57243816254417}, {"query": "\u0441\u0442\u0430\u0440\u043a\u043d\u0435\u0442", "clicks": 12, "impressions": 232, "ctr": 0.05172413793103448, "position": 2.5775862068965516}, {"query": "starkent", "clicks": 11, "impressions": 58, "ctr": 0.1896551724137931, "position": 1.9137931034482758}, {"query": "starknet blockchain", "clicks": 11, "impressions": 28, "ctr": 0.39285714285714285, "position": 1}, {"query": "starknet strkbtc", "clicks": 11, "impressions": 80, "ctr": 0.1375, "position": 3.5875}, {"query": "starknet wallets", "clicks": 11, "impressions": 46, "ctr": 0.2391304347826087, "position": 9.717391304347826}, {"query": "strk staking", "clicks": 11, "impressions": 25, "ctr": 0.44, "position": 1.04}], "privacy_cluster": {"name": "Privacy & Confidentiality", "summary": {"total_queries": 80, "total_clicks": 9, "total_impressions": 850, "ctr": 0.010588235294117647, "position_avg": 17.5}, "subgroups": [{"name": "ZK rollup / privacy-by-default questions", "description": "LLM-driven & user research queries asking whether Starknet provides privacy", "queries": [{"query": "do zksync and starknet provide privacy by default?", "impressions": 63, "position": 3.51, "clicks": 0}, {"query": "do zk rollups provide privacy by default zksync starknet privacy", "impressions": 41, "position": 8.95, "clicks": 0}, {"query": "do zk rollups like zksync and starknet provide privacy by default?", "impressions": 31, "position": 7.65, "clicks": 0}, {"query": "do zksync or starknet provide privacy by default?", "impressions": 34, "position": 3.06, "clicks": 0}, {"query": "does starknet provide privacy by default?", "impressions": 33, "position": 2.0, "clicks": 0}, {"query": "do zk-rollups provide privacy by default zksync starknet privacy", "impressions": 32, "position": 8.59, "clicks": 0}, {"query": "do zksync and starknet provide transaction privacy by default?", "impressions": 26, "position": 3.46, "clicks": 0}, {"query": "does starknet provide transaction privacy by default?", "impressions": 24, "position": 2.0, "clicks": 0}, {"query": "do zk-rollups like zksync and starknet provide privacy by default?", "impressions": 18, "position": 8.78, "clicks": 0}, {"query": "does starknet provide transaction privacy?", "impressions": 16, "position": 1.94, "clicks": 0}]}, {"name": "Zero-knowledge education", "description": "Generic ZK proof explainers \u2014 Starknet appears but doesn't capture clicks", "queries": [{"query": "bitcoin zero knowledge proof", "impressions": 37, "position": 15.27, "clicks": 0}, {"query": "blockchain zero knowledge proof", "impressions": 31, "position": 19.1, "clicks": 0}, {"query": "how do zero knowledge proofs work", "impressions": 19, "position": 22.21, "clicks": 0}, {"query": "crypto zero knowledge proof", "impressions": 14, "position": 17.36, "clicks": 0}, {"query": "how does zero knowledge proof work", "impressions": 14, "position": 27.36, "clicks": 0}, {"query": "example of zero knowledge proof", "impressions": 7, "position": 1.0, "clicks": 0}, {"query": "zk proof", "impressions": 188, "position": 10.56, "clicks": 1}, {"query": "zk-proofs", "impressions": 67, "position": 8.15, "clicks": 1}, {"query": "zkps", "impressions": 177, "position": 7.06, "clicks": 1}, {"query": "0 knowledge proof", "impressions": 51, "position": 19.29, "clicks": 0}]}, {"name": "Branded privacy queries (winning)", "description": "Queries where Starknet is the answer \u2014 these convert", "queries": [{"query": "starknet privacy", "impressions": 25, "position": 1.92, "clicks": 5}, {"query": "on-chain transaction privacy", "impressions": 4, "position": 7.75, "clicks": 1}]}, {"name": "Competitive privacy queries (Aleo, Secret, Monero territory)", "description": "Ranking poorly \u2014 and these are different intent (privacy coins, not privacy L2s)", "queries": [{"query": "best privacy coin", "impressions": 4, "position": 32.0, "clicks": 0}, {"query": "crypto privacy coin", "impressions": 4, "position": 65.5, "clicks": 0}, {"query": "crypto privacy coins", "impressions": 5, "position": 65.8, "clicks": 0}, {"query": "ethereum privacy coin", "impressions": 5, "position": 31.0, "clicks": 0}, {"query": "bitcoin privacy", "impressions": 6, "position": 70.5, "clicks": 0}, {"query": "blockchain wallet privacy", "impressions": 2, "position": 94.5, "clicks": 0}, {"query": "best privacy layer for ethereum", "impressions": 3, "position": 2.0, "clicks": 0}, {"query": "best privacy layer for ethereum smart contracts?", "impressions": 2, "position": 2.0, "clicks": 0}, {"query": "best privacy layers for ethereum defi builders?", "impressions": 1, "position": 1.0, "clicks": 0}, {"query": "defi privacy", "impressions": 11, "position": 11.64, "clicks": 0}]}], "insights": ["**Latent demand, untapped:** 50+ privacy-related query variants are surfacing Starknet but generating 6 clicks total. The 'does starknet provide privacy by default?' family alone has ~250 impressions/month.", "**LLM agents are testing privacy positioning:** Many query variants follow LLM-generated patterns ('do zksync and starknet provide privacy by default?'). These are AI assistants doing user research \u2014 your snippet content will be quoted in AI Overviews / Perplexity / ChatGPT answers even when the human never clicks.", "**The right pages don't exist:** Starknet ranks position 2-3 for these queries but with no dedicated /privacy/ or /shielded-transactions/ landing page. Google is matching against scattered blog posts (strkbtc, s-two prover) which don't directly answer the privacy question.", "**Competitive 'privacy coin' queries are wrong intent:** Don't chase Monero/Zcash/Aleo terms. The bigger win is owning 'private L2', 'privacy by default rollup', and 'shielded transactions on ethereum' \u2014 categories where Starknet has a real technical story (STRK20, s-two prover)."], "recommended_actions": ["Build a dedicated /privacy/ page that directly answers 'Does Starknet provide privacy by default?' \u2014 clear yes/no in the first 200 chars, then explain how STRK20 + s-two prover enable selective disclosure.", "Add an FAQ schema block to the privacy page so it's eligible for direct AI Overview citation. Format answers in a way LLMs can quote verbatim.", "Cluster existing privacy blog content (strkbtc-shielded-bitcoin, strk20, s-two-is-live, v0-14-2-privacy-engine) under the new /privacy/ hub with proper internal linking.", "Skip the privacy-coin queries \u2014 wrong intent. Target 'privacy L2', 'private rollup', 'shielded ethereum' instead."]}, "blog_section": {"summary": {"total_clicks": 531, "total_impressions": 215848, "ctr": 0.002460064489826174, "share_of_clicks": 0.42582197273456296}, "top_by_clicks": [{"url": "https://www.starknet.io/blog/strkbtc-starknets-shielded-bitcoin-with-private-transactions/", "clicks": 65, "impressions": 9387, "ctr": 0.0069, "position": 4.89}, {"url": "https://www.starknet.io/blog/make-all-erc-20-tokens-private-with-strk20/", "clicks": 61, "impressions": 6331, "ctr": 0.0096, "position": 4.78}, {"url": "https://www.starknet.io/blog/web3-games/", "clicks": 32, "impressions": 14197, "ctr": 0.0023, "position": 9.06}, {"url": "https://www.starknet.io/blog/native-usdc-live-on-starknet/", "clicks": 30, "impressions": 4503, "ctr": 0.0067, "position": 7.92}, {"url": "https://www.starknet.io/blog/getting-started-using-starknet-setting-up-a-starknet-wallet/", "clicks": 28, "impressions": 5341, "ctr": 0.0052, "position": 8.92}, {"url": "https://www.starknet.io/blog/ekubo-the-amm-endgame/", "clicks": 23, "impressions": 20397, "ctr": 0.0011, "position": 6.97}, {"url": "https://www.starknet.io/blog/starkzap/", "clicks": 21, "impressions": 2180, "ctr": 0.0096, "position": 4.23}, {"url": "https://www.starknet.io/blog/claiming-your-strk/", "clicks": 20, "impressions": 1743, "ctr": 0.0115, "position": 7.06}, {"url": "https://www.starknet.io/blog/layer-2-scaling-solutions/", "clicks": 19, "impressions": 51025, "ctr": 0.00037, "position": 6.69}, {"url": "https://www.starknet.io/blog/bitcoin-yield/", "clicks": 18, "impressions": 11613, "ctr": 0.0015, "position": 7.26}], "top_by_impressions": [{"url": "https://www.starknet.io/blog/layer-2-scaling-solutions/", "clicks": 19, "impressions": 51025, "ctr": 0.00037, "position": 6.69}, {"url": "https://www.starknet.io/blog/starknet-starter-pack/", "clicks": 15, "impressions": 21920, "ctr": 0.00068, "position": 7.02}, {"url": "https://www.starknet.io/blog/ekubo-the-amm-endgame/", "clicks": 23, "impressions": 20397, "ctr": 0.0011, "position": 6.97}, {"url": "https://www.starknet.io/blog/amm-meaning/", "clicks": 10, "impressions": 14209, "ctr": 0.0007, "position": 8.41}, {"url": "https://www.starknet.io/blog/web3-games/", "clicks": 32, "impressions": 14197, "ctr": 0.0023, "position": 9.06}, {"url": "https://www.starknet.io/blog/bitcoin-yield/", "clicks": 18, "impressions": 11613, "ctr": 0.0015, "position": 7.26}, {"url": "https://www.starknet.io/blog/strkbtc-starknets-shielded-bitcoin-with-private-transactions/", "clicks": 65, "impressions": 9387, "ctr": 0.0069, "position": 4.89}, {"url": "https://www.starknet.io/blog/account-abstraction/", "clicks": 12, "impressions": 8919, "ctr": 0.0013, "position": 8.83}, {"url": "https://www.starknet.io/blog/bridging-the-gap-near-intents-brings-seamless-cross-chain-interoperability-to-starknet/", "clicks": 16, "impressions": 8321, "ctr": 0.0019, "position": 7.74}, {"url": "https://www.starknet.io/blog/make-all-erc-20-tokens-private-with-strk20/", "clicks": 61, "impressions": 6331, "ctr": 0.0096, "position": 4.78}], "insights": ["Blog pages drove 531 clicks against 215,848 impressions in 30 days \u2014 that's 0.25% CTR, well below the site average of 0.56%.", "The blog is mainly serving impressions, not clicks. Three posts (layer-2-scaling-solutions, starter-pack, ekubo-amm-endgame) collectively have 93k impressions but only 57 clicks.", "The /blog/layer-2-scaling-solutions/ page is the most extreme: 51,025 impressions, 19 clicks \u2014 a 0.04% CTR. Highest-leverage rewrite opportunity in the entire site.", "Privacy-related blog content (strkbtc, strk20, v0.14.2 privacy engine, s-two) collectively brings 142 clicks \u2014 proving this audience exists when content matches intent."]}, "prior_weeks": [{"id": "may09", "label": "May 9 \u00b7 Week 30 Apr \u2013 6 May", "generated_at": "2026-05-09", "this_week": {"clicks": 1307, "impressions": 254732, "ctr": 0.00513, "position": 8.5, "start": "2026-04-30", "end": "2026-05-06"}, "last_week": {"clicks": 1376, "impressions": 169939, "ctr": 0.0081, "position": 7.65, "start": "2026-04-23", "end": "2026-04-29"}, "top_queries": [{"query": "starknet", "clicks": 269, "impressions": 1024, "ctr": 0.263, "position": 2.82}, {"query": "starknet bridge", "clicks": 40, "impressions": 115, "ctr": 0.348, "position": 6.43}, {"query": "starknet explorer", "clicks": 31, "impressions": 173, "ctr": 0.179, "position": 4.49}, {"query": "starknet wallet", "clicks": 29, "impressions": 179, "ctr": 0.162, "position": 22.65}, {"query": "earn stark", "clicks": 24, "impressions": 260, "ctr": 0.092, "position": 3.5}, {"query": "starkgate", "clicks": 24, "impressions": 57, "ctr": 0.421, "position": 5.07}, {"query": "starknet scan", "clicks": 18, "impressions": 80, "ctr": 0.225, "position": 4.66}, {"query": "starkscan", "clicks": 17, "impressions": 41, "ctr": 0.415, "position": 1.37}, {"query": "strkbtc", "clicks": 17, "impressions": 60, "ctr": 0.283, "position": 2.43}, {"query": "starknet crypto", "clicks": 14, "impressions": 135, "ctr": 0.104, "position": 5.15}], "top_pages": [["starknet.io/", 430, 20530, 0.0209, 10.76], ["starknet.io/block-explorers-monitoring-tools/", 92, 904, 0.1018, 3.77], ["starkgate.starknet.io/", 78, 1067, 0.0731, 8.18], ["starknet.io/bridges-and-onramps/", 64, 2590, 0.0247, 10.74], ["starknet.io/wallets/", 63, 3554, 0.0177, 6.22], ["starknet.io/staking/", 45, 18839, 0.0024, 7.82], ["earn.starknet.io/", 37, 440, 0.0841, 4.21], ["starknet.io/glossary/what-is-decentralization-in-blockchain/", 24, 7965, 0.003, 4.67], ["starknet.io/dapps/", 19, 7482, 0.0025, 13.05], ["starknet.io/starknet-defi/", 19, 3872, 0.0049, 7.08]], "summary": "Worst week of the 6-month window. Clicks -5.0%, impressions +49.9% (volume spike on /staking/ \u2014 18,839 imps but only 0.24% CTR). Position regression accelerated (7.65 \u2192 8.50). CTR halved.", "headline_actions": ["URGENT: /staking/ page exhausting impressions (18.8k imps / 45 clicks). Title or intent mismatch.", "Investigate the impression spike \u2014 was it spam-like or genuine demand surge?", "Bridge & onramps page slipped to position 10.74 from 16.92 \u2014 but check sustained gain."]}, {"id": "may13", "label": "May 13 \u00b7 Week 4\u201310 May", "generated_at": "2026-05-13", "this_week": {"clicks": 1675, "impressions": 279341, "ctr": 0.005996255472701823, "position": 7.882505611421166, "start": "2026-05-04", "end": "2026-05-10"}, "last_week": {"clicks": 1224, "impressions": 210884, "ctr": 0.005804138768232773, "position": 8.674119421103544, "start": "2026-04-27", "end": "2026-05-03"}, "top_queries": [{"query": "starknet", "clicks": 1469, "impressions": 5477, "ctr": 0.2682125251049845, "position": 2.354391090012781}, {"query": "starknet bridge", "clicks": 153, "impressions": 449, "ctr": 0.34075723830734966, "position": 6.200445434298441}, {"query": "starknet explorer", "clicks": 120, "impressions": 742, "ctr": 0.16172506738544473, "position": 3.4555256064690028}, {"query": "starknet wallet", "clicks": 103, "impressions": 692, "ctr": 0.14884393063583815, "position": 23.076589595375722}, {"query": "starkgate", "clicks": 92, "impressions": 224, "ctr": 0.4107142857142857, "position": 2.09375}, {"query": "starknet crypto", "clicks": 88, "impressions": 729, "ctr": 0.12071330589849108, "position": 2.810699588477366}, {"query": "earn stark", "clicks": 76, "impressions": 840, "ctr": 0.09047619047619047, "position": 3.6011904761904763}, {"query": "starknet scan", "clicks": 74, "impressions": 341, "ctr": 0.21700879765395895, "position": 4.712609970674487}, {"query": "starkscan", "clicks": 73, "impressions": 223, "ctr": 0.3273542600896861, "position": 1.7488789237668163}, {"query": "strk", "clicks": 60, "impressions": 9828, "ctr": 0.006105006105006105, "position": 7.577838827838828}], "top_pages": [["https://www.starknet.io/", 644, 32418, 0.0199, 12.0], ["https://www.starknet.io/block-explorers-monitoring-tools/", 99, 1004, 0.0986, 3.77], ["https://starkgate.starknet.io/", 83, 1104, 0.0752, 7.44], ["https://www.starknet.io/wallets/", 83, 3783, 0.0219, 6.76], ["https://www.starknet.io/bridges-and-onramps/", 71, 3901, 0.0182, 8.65], ["https://www.starknet.io/staking/", 56, 7723, 0.0073, 7.05], ["https://earn.starknet.io/", 48, 508, 0.0945, 4.33], ["https://www.starknet.io/blog/strkbtc-starknets-shielded-bitcoin-with-private-transactions/", 34, 4195, 0.0081, 4.82], ["https://www.starknet.io/glossary/what-is-decentralization-in-blockchain/", 25, 6670, 0.0037, 4.8], ["https://www.starknet.io/starknet-defi/", 25, 4238, 0.0059, 6.29]], "summary": "Strong WoW recovery (+36.8% clicks). Position regression continued (7.65 \u2192 7.88, weighted). Branded share still ~95%. Big finding: site-search hijack 'crypto staking www.stakesmart.io' inflated non-branded impressions by 65k. STRK Token cluster needs attention \u2014 19.4k impressions converting at 1.99%.", "headline_actions": ["Investigate site-search hijack pattern on stakesmart.io string \u2014 refer to web team.", "Build /privacy/ page to capture 80+ LLM-driven privacy queries.", "Rewrite /blog/layer-2-scaling-solutions/ \u2014 biggest CTR rewrite opportunity (51k imps, 0.04% CTR)."]}], "email": {"meta": {"source": "hubspot-email-dashboard-emails-2026-05-14.csv", "campaigns_total": 69, "date_range_start": "2025-04-07", "date_range_end": "2026-05-12", "this_week_range": "2026-05-06 \u2192 2026-05-13", "last_week_range": "2026-04-29 \u2192 2026-05-06"}, "totals": {"campaigns": 69, "sent": 131442, "delivered": 130326, "opened": 20778, "clicked": 3370, "unsubscribed": 588, "open_rate": 0.15943096542516458, "click_rate": 0.025858232432515383, "unsub_rate": 0.0045117628101836935}, "this_week": {"campaigns": 2, "sent": 46243, "delivered": 45999, "opened": 1332, "clicked": 86, "unsubscribed": 89, "bounces": 243, "open_rate": 0.028957151242418315, "click_rate": 0.0018696058609969782, "ctor": 0.06456456456456457, "unsub_rate": 0.0019348246701015239, "bounce_rate": 0.00525484938260926}, "last_week": {"campaigns": 1, "sent": 23170, "delivered": 22988, "opened": 1106, "clicked": 63, "unsubscribed": 129, "bounces": 182, "open_rate": 0.04811205846528624, "click_rate": 0.0027405602923264312, "ctor": 0.056962025316455694, "unsub_rate": 0.005611623455716026, "bounce_rate": 0.00785498489425982}, "wow": {"open_rate": -0.39813110961960924, "click_rate": -0.31780159472065816, "ctor": 0.13346680013346687, "unsub_rate": -0.6552112440597379, "sent": 0.9958135520069055, "campaigns": 1}, "weekly_series": [{"week_start": "2025-11-12", "week_end": "2025-11-19", "label": "11-12", "campaigns": 1, "sent": 1597, "delivered": 1589, "opened": 545, "clicked": 92, "unsubscribed": 12, "bounces": 8, "open_rate": 0.34298300818124605, "click_rate": 0.0578980490874764, "ctor": 0.1688073394495413, "unsub_rate": 0.007551919446192574, "bounce_rate": 0.005009392611145898}, {"week_start": "2025-11-19", "week_end": "2025-11-26", "label": "11-19", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2025-11-26", "week_end": "2025-12-03", "label": "11-26", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2025-12-03", "week_end": "2025-12-10", "label": "12-03", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2025-12-10", "week_end": "2025-12-17", "label": "12-10", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2025-12-17", "week_end": "2025-12-24", "label": "12-17", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2025-12-24", "week_end": "2025-12-31", "label": "12-24", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2025-12-31", "week_end": "2026-01-07", "label": "12-31", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-01-07", "week_end": "2026-01-14", "label": "01-07", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-01-14", "week_end": "2026-01-21", "label": "01-14", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-01-21", "week_end": "2026-01-28", "label": "01-21", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-01-28", "week_end": "2026-02-04", "label": "01-28", "campaigns": 1, "sent": 1879, "delivered": 1867, "opened": 655, "clicked": 106, "unsubscribed": 14, "bounces": 12, "open_rate": 0.3508302088912694, "click_rate": 0.056775575790037495, "ctor": 0.1618320610687023, "unsub_rate": 0.007498660953401178, "bounce_rate": 0.006386375731772219}, {"week_start": "2026-02-04", "week_end": "2026-02-11", "label": "02-04", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-02-11", "week_end": "2026-02-18", "label": "02-11", "campaigns": 1, "sent": 360, "delivered": 359, "opened": 115, "clicked": 12, "unsubscribed": 6, "bounces": 1, "open_rate": 0.3203342618384401, "click_rate": 0.033426183844011144, "ctor": 0.10434782608695652, "unsub_rate": 0.016713091922005572, "bounce_rate": 0.002777777777777778}, {"week_start": "2026-02-18", "week_end": "2026-02-25", "label": "02-18", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-02-25", "week_end": "2026-03-04", "label": "02-25", "campaigns": 1, "sent": 468, "delivered": 465, "opened": 118, "clicked": 5, "unsubscribed": 4, "bounces": 3, "open_rate": 0.2537634408602151, "click_rate": 0.010752688172043012, "ctor": 0.0423728813559322, "unsub_rate": 0.008602150537634409, "bounce_rate": 0.00641025641025641}, {"week_start": "2026-03-04", "week_end": "2026-03-11", "label": "03-04", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-03-11", "week_end": "2026-03-18", "label": "03-11", "campaigns": 1, "sent": 19936, "delivered": 19363, "opened": 1850, "clicked": 70, "unsubscribed": 170, "bounces": 573, "open_rate": 0.09554304601559675, "click_rate": 0.0036151422816712285, "ctor": 0.03783783783783784, "unsub_rate": 0.00877963125548727, "bounce_rate": 0.028741974317817016}, {"week_start": "2026-03-18", "week_end": "2026-03-25", "label": "03-18", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-03-25", "week_end": "2026-04-01", "label": "03-25", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-04-01", "week_end": "2026-04-08", "label": "04-01", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-04-08", "week_end": "2026-04-15", "label": "04-08", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-04-15", "week_end": "2026-04-22", "label": "04-15", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-04-22", "week_end": "2026-04-29", "label": "04-22", "campaigns": 0, "sent": 0, "delivered": 0, "opened": 0, "clicked": 0, "unsubscribed": 0, "bounces": 0, "open_rate": 0, "click_rate": 0, "ctor": 0, "unsub_rate": 0, "bounce_rate": 0}, {"week_start": "2026-04-29", "week_end": "2026-05-06", "label": "04-29", "campaigns": 1, "sent": 23170, "delivered": 22988, "opened": 1106, "clicked": 63, "unsubscribed": 129, "bounces": 182, "open_rate": 0.04811205846528624, "click_rate": 0.0027405602923264312, "ctor": 0.056962025316455694, "unsub_rate": 0.005611623455716026, "bounce_rate": 0.00785498489425982}, {"week_start": "2026-05-06", "week_end": "2026-05-13", "label": "05-06", "campaigns": 2, "sent": 46243, "delivered": 45999, "opened": 1332, "clicked": 86, "unsubscribed": 89, "bounces": 243, "open_rate": 0.028957151242418315, "click_rate": 0.0018696058609969782, "ctor": 0.06456456456456457, "unsub_rate": 0.0019348246701015239, "bounce_rate": 0.00525484938260926}], "ma": {"open_rate": [0.34298300818124605, 0.34298300818124605, 0.34298300818124605, 0.34298300818124605, 0, 0, 0, 0, 0, 0, 0, 0.3508302088912694, 0.3508302088912694, 0.33558223536485476, 0.33558223536485476, 0.28704885134932756, 0.28704885134932756, 0.17465324343790592, 0.17465324343790592, 0.09554304601559675, 0.09554304601559675, 0, 0, 0, 0.04811205846528624, 0.03853460485385228], "click_rate": [0.0578980490874764, 0.0578980490874764, 0.0578980490874764, 0.0578980490874764, 0, 0, 0, 0, 0, 0, 0, 0.056775575790037495, 0.056775575790037495, 0.04510087981702432, 0.04510087981702432, 0.022089436008027076, 0.022089436008027076, 0.00718391522685712, 0.00718391522685712, 0.0036151422816712285, 0.0036151422816712285, 0, 0, 0, 0.0027405602923264312, 0.0023050830766617046], "ctor": [0.1688073394495413, 0.1688073394495413, 0.1688073394495413, 0.1688073394495413, 0, 0, 0, 0, 0, 0, 0, 0.1618320610687023, 0.1618320610687023, 0.1330899435778294, 0.1330899435778294, 0.07336035372144437, 0.07336035372144437, 0.04010535959688502, 0.04010535959688502, 0.03783783783783784, 0.03783783783783784, 0, 0, 0, 0.056962025316455694, 0.06076329494051013], "unsub_rate": [0.007551919446192574, 0.007551919446192574, 0.007551919446192574, 0.007551919446192574, 0, 0, 0, 0, 0, 0, 0, 0.007498660953401178, 0.007498660953401178, 0.012105876437703375, 0.012105876437703375, 0.01265762122981999, 0.01265762122981999, 0.00869089089656084, 0.00869089089656084, 0.00877963125548727, 0.00877963125548727, 0, 0, 0, 0.005611623455716026, 0.003773224062908775], "sent": [1597.0, 1597.0, 1597.0, 1597.0, 0, 0, 0, 0, 0, 0, 0, 1879.0, 1879.0, 1119.5, 1119.5, 414.0, 414.0, 10202.0, 10202.0, 19936.0, 19936.0, 0, 0, 0, 23170.0, 34706.5]}, "monthly": [{"month": "2025-04", "campaigns": 19, "sent": 9946, "delivered": 9931, "opened": 4439, "clicked": 849, "unsubscribed": 15, "open_rate": 0.44698419091732955, "click_rate": 0.08548988017319505, "ctor": 0.19125929263347602, "unsub_rate": 0.0015104219111871915, "sent_delta": null, "open_rate_delta": null, "click_rate_delta": null, "unsub_rate_delta": null}, {"month": "2025-05", "campaigns": 9, "sent": 8286, "delivered": 8253, "opened": 3074, "clicked": 481, "unsubscribed": 15, "open_rate": 0.3724706167454259, "click_rate": 0.05828183690779111, "ctor": 0.1564736499674691, "unsub_rate": 0.0018175209014903672, "sent_delta": -0.1669012668409411, "open_rate_delta": -0.16670292973669182, "click_rate_delta": -0.31826039772523734, "unsub_rate_delta": 0.2033200048467225}, {"month": "2025-06", "campaigns": 1, "sent": 1347, "delivered": 1342, "opened": 688, "clicked": 87, "unsubscribed": 8, "open_rate": 0.5126676602086438, "click_rate": 0.06482861400894188, "ctor": 0.12645348837209303, "unsub_rate": 0.005961251862891207, "sent_delta": -0.837436640115858, "open_rate_delta": 0.376397592616115, "click_rate_delta": 0.11232962872307134, "unsub_rate_delta": 2.2798807749627423}, {"month": "2025-07", "campaigns": 7, "sent": 5318, "delivered": 5304, "opened": 1547, "clicked": 249, "unsubscribed": 46, "open_rate": 0.2916666666666667, "click_rate": 0.04694570135746606, "ctor": 0.16095669036845509, "unsub_rate": 0.008672699849170438, "sent_delta": 2.9480326651818856, "open_rate_delta": -0.43108042635658916, "click_rate_delta": -0.2758490664170178, "unsub_rate_delta": 0.4548453996983409}, {"month": "2025-08", "campaigns": 13, "sent": 4293, "delivered": 4285, "opened": 2101, "clicked": 466, "unsubscribed": 19, "open_rate": 0.49031505250875146, "click_rate": 0.1087514585764294, "ctor": 0.22179914326511185, "unsub_rate": 0.004434072345390899, "sent_delta": -0.19274163219255358, "open_rate_delta": 0.6810801800300049, "click_rate_delta": 1.3165370935316527, "unsub_rate_delta": -0.48873218000101465}, {"month": "2025-09", "campaigns": 12, "sent": 8599, "delivered": 8581, "opened": 3208, "clicked": 804, "unsubscribed": 61, "open_rate": 0.37384920172474073, "click_rate": 0.09369537349959212, "ctor": 0.2506234413965087, "unsub_rate": 0.00710872858641184, "sent_delta": 1.0030281854181224, "open_rate_delta": -0.23753268472607614, "click_rate_delta": -0.13844490247692653, "unsub_rate_delta": 0.6032053680407754}, {"month": "2025-11", "campaigns": 1, "sent": 1597, "delivered": 1589, "opened": 545, "clicked": 92, "unsubscribed": 12, "open_rate": 0.34298300818124605, "click_rate": 0.0578980490874764, "ctor": 0.1688073394495413, "unsub_rate": 0.007551919446192574, "sent_delta": -0.8142807303174788, "open_rate_delta": -0.08256321907628673, "click_rate_delta": -0.3820607472392599, "unsub_rate_delta": 0.06234460275046686}, {"month": "2026-02", "campaigns": 2, "sent": 2239, "delivered": 2226, "opened": 770, "clicked": 118, "unsubscribed": 20, "open_rate": 0.34591194968553457, "click_rate": 0.053009883198562445, "ctor": 0.15324675324675324, "unsub_rate": 0.008984725965858042, "sent_delta": 0.40200375704445834, "open_rate_delta": 0.008539611101494414, "click_rate_delta": -0.0844271260596117, "unsub_rate_delta": 0.18972746331236903}, {"month": "2026-03", "campaigns": 2, "sent": 20404, "delivered": 19828, "opened": 1968, "clicked": 75, "unsubscribed": 174, "open_rate": 0.09925358079483558, "click_rate": 0.0037825297559007463, "ctor": 0.038109756097560975, "unsub_rate": 0.00877546903368973, "sent_delta": 8.112996873604288, "open_rate_delta": -0.7130669209749299, "click_rate_delta": -0.9286448200285164, "unsub_rate_delta": -0.02329029655033301}, {"month": "2026-05", "campaigns": 3, "sent": 69413, "delivered": 68987, "opened": 2438, "clicked": 149, "unsubscribed": 218, "open_rate": 0.0353399915926189, "click_rate": 0.0021598272138228943, "ctor": 0.06111566858080394, "unsub_rate": 0.003160015655123429, "sent_delta": 2.40193099392276, "open_rate_delta": -0.6439424017792441, "click_rate_delta": -0.42899928005759536, "unsub_rate_delta": -0.6399035033920267}], "top_by_opens_30d": [{"name": "(A) strkBTC Watch Party", "subject": "Bitcoin without the audience.", "send_date": "2026-05-04", "sent": 23170, "delivered": 22988, "opened": 1106, "clicked": 63, "unsubscribed": 129, "open_rate": 0.04811, "click_rate": 0.0027400000000000002, "ctor": 0.05696, "unsub_rate": 0.00561}, {"name": "strkBTC is live", "subject": "strkBTC is here: Private Bitcoin now live on Starknet", "send_date": "2026-05-12", "sent": 23254, "delivered": 23123, "opened": 928, "clicked": 47, "unsubscribed": 38, "open_rate": 0.04013, "click_rate": 0.00203, "ctor": 0.05065, "unsub_rate": 0.00164}, {"name": "(A) Bitcoins Missing Link", "subject": "Not every Bitcoin move belongs in public", "send_date": "2026-05-06", "sent": 22989, "delivered": 22876, "opened": 404, "clicked": 39, "unsubscribed": 51, "open_rate": 0.01766, "click_rate": 0.0017000000000000001, "ctor": 0.09653, "unsub_rate": 0.00223}], "top_by_open_rate_30d": [{"name": "(A) strkBTC Watch Party", "subject": "Bitcoin without the audience.", "send_date": "2026-05-04", "sent": 23170, "delivered": 22988, "opened": 1106, "clicked": 63, "unsubscribed": 129, "open_rate": 0.04811, "click_rate": 0.0027400000000000002, "unsub_rate": 0.00561}, {"name": "strkBTC is live", "subject": "strkBTC is here: Private Bitcoin now live on Starknet", "send_date": "2026-05-12", "sent": 23254, "delivered": 23123, "opened": 928, "clicked": 47, "unsubscribed": 38, "open_rate": 0.04013, "click_rate": 0.00203, "unsub_rate": 0.00164}, {"name": "(A) Bitcoins Missing Link", "subject": "Not every Bitcoin move belongs in public", "send_date": "2026-05-06", "sent": 22989, "delivered": 22876, "opened": 404, "clicked": 39, "unsubscribed": 51, "open_rate": 0.01766, "click_rate": 0.0017000000000000001, "unsub_rate": 0.00223}], "unsub_risk": [{"name": "Cairo Developer Survey - Tell us what you think!", "subject": "Help Shape Cairo's Future: 2-Minute Developer Survey", "send_date": "2026-02-17", "sent": 360, "delivered": 359, "unsubscribed": 6, "unsub_rate": 0.01671, "open_rate": 0.32033, "click_rate": 0.03343, "type": ""}, {"name": "Hackathon Website Registrations - Push 2 (Clone)", "subject": "[ACTION NEEDED] Register on Devpost", "send_date": "2025-09-11", "sent": 441, "delivered": 441, "unsubscribed": 5, "unsub_rate": 0.01134, "open_rate": 0.35828000000000004, "click_rate": 0.12244999999999999, "type": "Event Invitation or Reminder"}, {"name": "Basecamps to Luma Subscribers", "subject": "Build with us, pitch in Buenos Aires: Basecamp is here", "send_date": "2025-07-31", "sent": 3650, "delivered": 3641, "unsubscribed": 41, "unsub_rate": 0.01126, "open_rate": 0.23263, "click_rate": 0.023889999999999998, "type": "Event Invitation or Reminder"}, {"name": "DB13 Session 4 reminder", "subject": "Important updates from Session 3: Developer Basecamp", "send_date": "2025-08-26", "sent": 427, "delivered": 427, "unsubscribed": 4, "unsub_rate": 0.00937, "open_rate": 0.49883000000000005, "click_rate": 0.20609000000000002, "type": "Event Invitation or Reminder"}, {"name": "Hackathon Registration Blast", "subject": "Starknet Re{solve} Hackathon: Registrations Live Now", "send_date": "2025-09-09", "sent": 4444, "delivered": 4433, "unsubscribed": 40, "unsub_rate": 0.00902, "open_rate": 0.27002, "click_rate": 0.030899999999999997, "type": "Event Invitation or Reminder"}, {"name": "STRK20 Whitepaper", "subject": "Every token on Starknet just got a lot more private", "send_date": "2026-03-12", "sent": 19936, "delivered": 19363, "unsubscribed": 170, "unsub_rate": 0.00878, "open_rate": 0.09554, "click_rate": 0.00362, "type": "Product or Feature Announcement"}, {"name": "Hackathon Extension + Cairo Developer Survey", "subject": "\u23f3 Hackathon deadline extended", "send_date": "2026-03-03", "sent": 468, "delivered": 465, "unsubscribed": 4, "unsub_rate": 0.0086, "open_rate": 0.25376, "click_rate": 0.01075, "type": "Event Invitation or Reminder"}, {"name": "DB13 SPOKs Claim", "subject": "Developer Basecamp: Claim your SPOKs", "send_date": "2025-09-24", "sent": 384, "delivered": 384, "unsubscribed": 3, "unsub_rate": 0.00781, "open_rate": 0.59896, "click_rate": 0.23698, "type": "Account Management"}, {"name": "Ztarknet Hackathon Push 1", "subject": "$10,000 in Prizes on Starknet track at Zypherpunk hackathon", "send_date": "2025-11-13", "sent": 1597, "delivered": 1589, "unsubscribed": 12, "unsub_rate": 0.00755, "open_rate": 0.34298, "click_rate": 0.0579, "type": "Event Invitation or Reminder"}, {"name": "Re{define} Hackathon promotion", "subject": "Starknet Hackathon", "send_date": "2026-02-02", "sent": 1879, "delivered": 1867, "unsubscribed": 14, "unsub_rate": 0.0075, "open_rate": 0.35083, "click_rate": 0.05678, "type": ""}], "by_type": [{"type": "Uncategorised", "campaigns": 31, "sent": 21818, "open_rate": 0.41242184626700995, "click_rate": 0.07056822361162192, "unsub_rate": 0.002666421478484737}, {"type": "Event Invitation or Reminder", "campaigns": 22, "sent": 38956, "open_rate": 0.16527239865737153, "click_rate": 0.02798863929770204, "unsub_rate": 0.006454944487477408}, {"type": "Educational", "campaigns": 11, "sent": 26451, "open_rate": 0.07709543883635259, "click_rate": 0.014963351183016217, "unsub_rate": 0.002544529262086514}, {"type": "Account Management", "campaigns": 3, "sent": 1027, "open_rate": 0.5822784810126582, "click_rate": 0.23369036027263876, "unsub_rate": 0.004868549172346641}, {"type": "Product or Feature Announcement", "campaigns": 2, "sent": 43190, "open_rate": 0.06538624488066658, "click_rate": 0.0027538483265075555, "unsub_rate": 0.004895730358235654}], "by_subject_class": [{"classification": "Benefit Focused", "campaigns": 3, "open_rate": 0.5259165613147914, "click_rate": 0.17699115044247787, "unsub_rate": 0.0050568900126422255}, {"classification": "Direct Statement", "campaigns": 4, "open_rate": 0.5177664974619289, "click_rate": 0.12013536379018612, "unsub_rate": 0.00338409475465313}, {"classification": "Uncategorised", "campaigns": 31, "open_rate": 0.41242184626700995, "click_rate": 0.07056822361162192, "unsub_rate": 0.002666421478484737}, {"classification": "Urgent/Time-sensitive", "campaigns": 6, "open_rate": 0.4117850953206239, "click_rate": 0.11681109185441942, "unsub_rate": 0.006932409012131715}, {"classification": "Promotional", "campaigns": 1, "open_rate": 0.34298300818124605, "click_rate": 0.0578980490874764, "unsub_rate": 0.007551919446192574}, {"classification": "Other", "campaigns": 13, "open_rate": 0.3203991130820399, "click_rate": 0.053812041616919666, "unsub_rate": 0.008016373870032407}, {"classification": "News/Announcement", "campaigns": 9, "open_rate": 0.08485079821272201, "click_rate": 0.00877921728001437, "unsub_rate": 0.004849900083076992}, {"classification": "Teaser/Curiosity", "campaigns": 1, "open_rate": 0.04811205846528624, "click_rate": 0.0027405602923264312, "unsub_rate": 0.005611623455716026}, {"classification": "Question Format", "campaigns": 1, "open_rate": 0.017660430145130267, "click_rate": 0.00170484350410911, "unsub_rate": 0.002229410736142682}], "top_by_opens_alltime": [{"name": "STRK20 Whitepaper", "subject": "Every token on Starknet just got a lot more private", "send_date": "2026-03-12", "sent": 19936, "opened": 1850, "clicked": 70, "open_rate": 0.09554, "click_rate": 0.00362, "unsub_rate": 0.00878}, {"name": "Hackathon Registration Blast", "subject": "Starknet Re{solve} Hackathon: Registrations Live Now", "send_date": "2025-09-09", "sent": 4444, "opened": 1197, "clicked": 137, "open_rate": 0.27002, "click_rate": 0.030899999999999997, "unsub_rate": 0.00902}, {"name": "(A) strkBTC Watch Party", "subject": "Bitcoin without the audience.", "send_date": "2026-05-04", "sent": 23170, "opened": 1106, "clicked": 63, "open_rate": 0.04811, "click_rate": 0.0027400000000000002, "unsub_rate": 0.00561}, {"name": "strkBTC is live", "subject": "strkBTC is here: Private Bitcoin now live on Starknet", "send_date": "2026-05-12", "sent": 23254, "opened": 928, "clicked": 47, "open_rate": 0.04013, "click_rate": 0.00203, "unsub_rate": 0.00164}, {"name": "Basecamps to Luma Subscribers", "subject": "Build with us, pitch in Buenos Aires: Basecamp is here", "send_date": "2025-07-31", "sent": 3650, "opened": 847, "clicked": 87, "open_rate": 0.23263, "click_rate": 0.023889999999999998, "unsub_rate": 0.01126}, {"name": "Register for Startnet Hackathon: Re{ignite} - a 2-week online event", "subject": "Register for Startnet Hackathon: Re{ignite} - a 2-week online event", "send_date": "2025-04-24", "sent": 1468, "opened": 711, "clicked": 140, "open_rate": 0.48499000000000003, "click_rate": 0.0955, "unsub_rate": 0.0027300000000000002}, {"name": "Starknet Hackathon: Re{ignite} - Bounty information, hackathon checklist, and more!", "subject": "Starknet Hackathon: Re{ignite} - Bounty information, hackathon checklist, and more!", "send_date": "2025-05-09", "sent": 1391, "opened": 688, "clicked": 99, "open_rate": 0.49639000000000005, "click_rate": 0.07143, "unsub_rate": 0.0028899999999999998}, {"name": "Starknet Re{ignite} Hackathon winners and what's next", "subject": "Starknet Re{ignite} Hackathon winners and what's next", "send_date": "2025-06-10", "sent": 1347, "opened": 688, "clicked": 87, "open_rate": 0.5126700000000001, "click_rate": 0.06483, "unsub_rate": 0.00596}, {"name": "Re{define} Hackathon promotion", "subject": "Starknet Hackathon", "send_date": "2026-02-02", "sent": 1879, "opened": 655, "clicked": 106, "open_rate": 0.35083, "click_rate": 0.05678, "unsub_rate": 0.0075}, {"name": "Ztarknet Hackathon Push 1", "subject": "$10,000 in Prizes on Starknet track at Zypherpunk hackathon", "send_date": "2025-11-13", "sent": 1597, "opened": 545, "clicked": 92, "open_rate": 0.34298, "click_rate": 0.0579, "unsub_rate": 0.00755}]}};
+
+// ============== Helpers ==============
+const fmt = {
+  int: n => n == null ? '—' : Math.round(n).toLocaleString('en-US'),
+  num: (n, d=0) => n == null ? '—' : n.toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d}),
+  pct: (n, d=2) => n == null ? '—' : (n*100).toFixed(d) + '%',
+  pos: n => n == null ? '—' : n.toFixed(2),
+  pctDelta: n => n == null ? '—' : (n > 0 ? '+' : '') + (n*100).toFixed(1) + '%',
+  posDelta: n => n == null ? '—' : (n > 0 ? '+' : '') + n.toFixed(2),
+};
+
+const deltaClass = (n, invert=false) => {
+  if (n == null) return 'delta-flat';
+  const v = invert ? -n : n;
+  if (Math.abs(v) < 0.01) return 'delta-flat';
+  return v > 0 ? 'delta-up' : 'delta-down';
+};
+const deltaArrow = (n, invert=false) => {
+  if (n == null || Math.abs(n) < 0.001) return '→';
+  const v = invert ? -n : n;
+  return v > 0 ? '↑' : '↓';
+};
+
+// ============== KPI grid ==============
+function renderKPIs() {
+  const tw = REPORT_DATA.this_week;
+  const lw = REPORT_DATA.last_week;
+  const w = REPORT_DATA.wow;
+  const items = [
+    { label: 'Clicks (week)', value: fmt.int(tw.clicks), delta: w.clicks_delta, sub: `vs ${fmt.int(lw.clicks)} last week` },
+    { label: 'Impressions (week)', value: fmt.int(tw.impressions), delta: w.imps_delta, sub: `vs ${fmt.int(lw.impressions)} last week` },
+    { label: 'CTR (week)', value: fmt.pct(tw.ctr, 2), delta: w.ctr_delta, sub: `vs ${fmt.pct(lw.ctr, 2)} last week` },
+    { label: 'Avg position', value: fmt.pos(tw.position), deltaAbs: w.pos_delta, sub: `vs ${fmt.pos(lw.position)} last week`, invert: true, isAbs: true },
+  ];
+  document.getElementById('kpi-grid').innerHTML = items.map(k => {
+    const d = k.isAbs ? k.deltaAbs : k.delta;
+    const cls = deltaClass(d, k.invert);
+    const arrow = deltaArrow(d, k.invert);
+    const text = k.isAbs ? fmt.posDelta(d) : fmt.pctDelta(d);
+    return `
+      <div class="kpi">
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-value">${k.value}</div>
+        <div class="kpi-delta ${cls}">${arrow} ${text}</div>
+        <div class="kpi-sub">${k.sub}</div>
+      </div>`;
+  }).join('');
+}
+
+// ============== Charts ==============
+function drawLineChart(svgId, data, ma, options={}) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const W = 700, H = 200, PADL = 38, PADR = 12, PADT = 12, PADB = 24;
+  const innerW = W - PADL - PADR;
+  const innerH = H - PADT - PADB;
+  const n = data.length;
+
+  let minV = Math.min(...data, ...ma);
+  let maxV = Math.max(...data, ...ma);
+  if (options.fromZero) minV = 0;
+  if (maxV === minV) maxV = minV + 1;
+  const range = maxV - minV;
+  const padR = range * 0.08;
+  minV = options.fromZero ? 0 : minV - padR;
+  maxV = maxV + padR;
+
+  const x = i => PADL + (i / (n - 1 || 1)) * innerW;
+  let y;
+  if (options.invertY) {
+    y = v => PADT + ((v - minV) / (maxV - minV)) * innerH;
+  } else {
+    y = v => PADT + innerH - ((v - minV) / (maxV - minV)) * innerH;
+  }
+
+  let grid = '';
+  const tickN = 4;
+  for (let i = 0; i <= tickN; i++) {
+    const yv = minV + (maxV - minV) * (i / tickN);
+    const yp = options.invertY ? PADT + (i / tickN) * innerH : PADT + innerH - (i / tickN) * innerH;
+    const label = options.format ? options.format(yv) : Math.round(yv);
+    grid += `<line x1="${PADL}" y1="${yp}" x2="${W - PADR}" y2="${yp}" stroke="#1c2030" stroke-width="1" />`;
+    grid += `<text x="${PADL - 6}" y="${yp + 3}" text-anchor="end" fill="#5c6273" font-size="9" font-family="JetBrains Mono, monospace">${label}</text>`;
+  }
+
+  const dateLabels = REPORT_DATA.time_series;
+  let xLabels = '';
+  const labelStops = [0, Math.floor(n*0.25), Math.floor(n*0.5), Math.floor(n*0.75), n-1];
+  for (const idx of labelStops) {
+    const d = dateLabels[idx].date;
+    const short = d.slice(5);
+    xLabels += `<text x="${x(idx)}" y="${H - 6}" text-anchor="middle" fill="#5c6273" font-size="9" font-family="JetBrains Mono, monospace">${short}</text>`;
+  }
+
+  const rawPath = data.map((v, i) => `${i === 0 ? 'M' : 'L'} ${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+  const maPath = ma.map((v, i) => `${i === 0 ? 'M' : 'L'} ${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+  const areaPath = maPath + ` L ${x(n-1).toFixed(1)} ${(PADT + innerH).toFixed(1)} L ${PADL.toFixed(1)} ${(PADT + innerH).toFixed(1)} Z`;
+
+  const bandX1 = x(n - 7);
+  const bandX2 = x(n - 1);
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="${svgId}-grad" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#f97316" stop-opacity="0.18" />
+        <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+    ${grid}
+    <rect x="${bandX1}" y="${PADT}" width="${bandX2-bandX1}" height="${innerH}" fill="#f97316" opacity="0.04" />
+    ${options.invertY ? '' : `<path d="${areaPath}" fill="url(#${svgId}-grad)" />`}
+    <path d="${rawPath}" fill="none" stroke="#5c6273" stroke-width="1" stroke-opacity="0.55" />
+    <path d="${maPath}" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    ${xLabels}
+  `;
+}
+
+function renderCharts() {
+  const ts = REPORT_DATA.time_series;
+  const ma = REPORT_DATA.ma;
+  drawLineChart('chart-clicks', ts.map(r => r.clicks), ma.clicks, { fromZero: true });
+  drawLineChart('chart-imps', ts.map(r => r.impressions), ma.impressions, { fromZero: true, format: v => (v/1000).toFixed(0) + 'k' });
+  drawLineChart('chart-ctr', ts.map(r => r.ctr), ma.ctr, { fromZero: true, format: v => (v*100).toFixed(1) + '%' });
+  drawLineChart('chart-pos', ts.map(r => r.position), ma.position, { invertY: true, format: v => v.toFixed(1) });
+
+  const last30 = ts.slice(-30);
+  const last30Clicks = last30.reduce((s, r) => s + r.clicks, 0);
+  const last30Imps = last30.reduce((s, r) => s + r.impressions, 0);
+  const last30Pos = last30.reduce((s,r) => s + r.position*r.impressions, 0) / last30Imps;
+  document.getElementById('clicks-meta').textContent = `${fmt.int(last30Clicks)} clicks (30d)`;
+  document.getElementById('imps-meta').textContent = `${fmt.int(last30Imps)} impressions (30d)`;
+  document.getElementById('ctr-meta').textContent = `Avg 30d: ${fmt.pct(last30Clicks/last30Imps, 2)}`;
+  document.getElementById('pos-meta').textContent = `Avg 30d: ${last30Pos.toFixed(2)}`;
+}
+
+function renderMonthly() {
+  const rows = REPORT_DATA.monthly;
+  document.getElementById('monthly-table').innerHTML = `
+    <thead>
+      <tr>
+        <th>Month</th><th class="num">Clicks/day</th><th class="num">MoM</th>
+        <th class="num">Imps/day</th><th class="num">MoM</th>
+        <th class="num">CTR</th><th class="num">MoM</th>
+        <th class="num">Avg pos</th><th class="num">MoM</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(m => `<tr>
+        <td class="month-cell">${m.month}</td>
+        <td class="num">${fmt.int(m.clicks_per_day)}</td>
+        <td class="num"><span class="delta-cell ${deltaClass(m.clicks_delta)}">${fmt.pctDelta(m.clicks_delta)}</span></td>
+        <td class="num">${fmt.int(m.imps_per_day)}</td>
+        <td class="num"><span class="delta-cell ${deltaClass(m.imps_delta)}">${fmt.pctDelta(m.imps_delta)}</span></td>
+        <td class="num">${fmt.pct(m.ctr, 2)}</td>
+        <td class="num"><span class="delta-cell ${deltaClass(m.ctr_delta)}">${fmt.pctDelta(m.ctr_delta)}</span></td>
+        <td class="num">${fmt.pos(m.position)}</td>
+        <td class="num"><span class="delta-cell ${deltaClass(m.pos_delta, true)}">${fmt.posDelta(m.pos_delta)}</span></td>
+      </tr>`).join('')}
+    </tbody>`;
+}
+
+function renderBaseline() {
+  const b = REPORT_DATA.clean_baseline;
+  const items = [
+    { label: 'Avg clicks / day', value: fmt.int(b.clicks_per_day), sub: `${b.days} clean days` },
+    { label: 'Avg impressions / day', value: fmt.int(b.imps_per_day), sub: `${b.excluded} day excluded` },
+    { label: 'Baseline CTR', value: fmt.pct(b.ctr, 2), sub: 'across 31 days' },
+    { label: 'Baseline position', value: fmt.pos(b.position), sub: 'impression-weighted' },
+  ];
+  document.getElementById('baseline-grid').innerHTML = items.map(k => `
+    <div class="kpi">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+}
+
+function renderSplit() {
+  const b = REPORT_DATA.branded;
+  const nb = REPORT_DATA.non_branded;
+  const nbc = REPORT_DATA.non_branded_clean;
+  const totalClicks = b.clicks + nb.clicks;
+  const totalImps = b.impressions + nb.impressions;
+  const bShareClicks = b.clicks / totalClicks;
+  const bShareImps = b.impressions / totalImps;
+  document.getElementById('branded-share-pct').innerHTML = `<strong>${fmt.pct(bShareClicks, 1)}</strong>`;
+  document.getElementById('branded-imp-share').innerHTML = `<strong>${fmt.pct(bShareImps, 1)}</strong>`;
+
+  document.getElementById('split-grid').innerHTML = `
+    <div class="split-card branded">
+      <div class="split-head">
+        <div class="split-title">Branded queries</div>
+        <div class="split-share">${b.queries} queries · ${fmt.pct(bShareClicks, 1)} share of clicks</div>
+      </div>
+      <div class="split-stats">
+        <div><div class="kpi-label">Clicks</div><div class="kpi-value" style="font-size:24px">${fmt.int(b.clicks)}</div></div>
+        <div><div class="kpi-label">Impressions</div><div class="kpi-value" style="font-size:24px">${fmt.int(b.impressions)}</div></div>
+        <div><div class="kpi-label">CTR</div><div class="kpi-value" style="font-size:24px">${fmt.pct(b.ctr, 2)}</div></div>
+        <div><div class="kpi-label">Avg position</div><div class="kpi-value" style="font-size:24px">${fmt.pos(b.position)}</div></div>
+      </div>
+      <div class="split-bar"><div class="split-bar-fill" style="width:${(bShareClicks*100).toFixed(1)}%"></div></div>
+    </div>
+    <div class="split-card non-branded">
+      <div class="split-head">
+        <div class="split-title">Non-branded queries</div>
+        <div class="split-share">${nb.queries} queries · ${fmt.pct(1-bShareClicks, 1)} share of clicks</div>
+      </div>
+      <div class="split-stats">
+        <div><div class="kpi-label">Clicks</div><div class="kpi-value" style="font-size:24px">${fmt.int(nb.clicks)}</div></div>
+        <div><div class="kpi-label">Impressions</div><div class="kpi-value" style="font-size:24px">${fmt.int(nb.impressions)}</div></div>
+        <div><div class="kpi-label">CTR</div><div class="kpi-value" style="font-size:24px">${fmt.pct(nb.ctr, 2)}</div></div>
+        <div><div class="kpi-label">Avg position</div><div class="kpi-value" style="font-size:24px">${fmt.pos(nb.position)}</div></div>
+      </div>
+      <div class="split-bar"><div class="split-bar-fill" style="width:${((1-bShareClicks)*100).toFixed(1)}%; background:var(--text-tertiary)"></div></div>
+      <div style="font-size:11px; color:var(--text-tertiary); margin-top:10px; font-family:'JetBrains Mono', monospace">
+        Note: non-branded inflated by 65,967 impressions on "crypto staking www.stakesmart.io" — a site-search hijack pattern. Cleaned: ${fmt.int(nbc.clicks)} cl / ${fmt.int(nbc.impressions)} imp / CTR ${fmt.pct(nbc.ctr, 2)}.
+      </div>
+    </div>`;
+}
+
+function renderClusters() {
+  const clusters = REPORT_DATA.clusters;
+  document.getElementById('cluster-grid').innerHTML = clusters.map(c => `
+    <div class="cluster">
+      <div class="cluster-name">${c.name}</div>
+      <div class="cluster-stats">
+        <div class="cluster-stat"><span class="cluster-stat-label">Clicks</span><span class="cluster-stat-value">${fmt.int(c.clicks)}</span></div>
+        <div class="cluster-stat"><span class="cluster-stat-label">Impressions</span><span class="cluster-stat-value">${fmt.int(c.impressions)}</span></div>
+        <div class="cluster-stat"><span class="cluster-stat-label">CTR</span><span class="cluster-stat-value">${fmt.pct(c.ctr, 2)}</span></div>
+        <div class="cluster-stat"><span class="cluster-stat-label">Avg pos</span><span class="cluster-stat-value">${fmt.pos(c.position)}</span></div>
+      </div>
+      <div class="cluster-meta">
+        <span>${c.queries} queries</span>
+        <span>${(c.clicks / clusters.reduce((s,x)=>s+x.clicks,0) * 100).toFixed(1)}% of clicks</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderQuickWins() {
+  const wins = REPORT_DATA.quick_wins.slice(0, 12);
+  const recommend = (q) => {
+    if (q.position > 10) return 'Push to top 10 — internal links + on-page refresh';
+    if (q.ctr / q.expected_ctr < 0.3) return 'Rewrite title + meta — major CTR gap';
+    if (q.ctr / q.expected_ctr < 0.6) return 'Tune meta — AI Overview likely eating clicks';
+    return 'Test alternate title format';
+  };
+  document.getElementById('qw-table').innerHTML = `
+    <thead>
+      <tr><th>Query</th><th class="num">Pos</th><th class="num">CTR</th><th class="num">Expected</th>
+        <th class="num">Impressions</th><th class="num">Est. lost clicks</th><th>Fix</th></tr>
+    </thead>
+    <tbody>
+      ${wins.map(q => `<tr>
+        <td class="query-cell">${q.query}</td>
+        <td class="num">${fmt.pos(q.position)}</td>
+        <td class="num">${fmt.pct(q.ctr, 2)}</td>
+        <td class="num" style="color:var(--text-tertiary)">${fmt.pct(q.expected_ctr, 1)}</td>
+        <td class="num">${fmt.int(q.impressions)}</td>
+        <td class="num"><span style="color:var(--accent); font-weight:600">${fmt.int(q.lost_clicks)}</span></td>
+        <td style="font-size:12px; color:var(--text-secondary)">${recommend(q)}</td>
+      </tr>`).join('')}
+    </tbody>`;
+}
+
+function renderCtrUnder() {
+  const items = REPORT_DATA.ctr_underperformers.slice(0, 10);
+  document.getElementById('ctr-under-table').innerHTML = `
+    <thead>
+      <tr><th>Query</th><th class="num">Pos</th><th class="num">CTR</th><th class="num">Expected</th><th class="num">Ratio</th><th class="num">Impressions</th></tr>
+    </thead>
+    <tbody>
+      ${items.map(q => `<tr>
+        <td class="query-cell">${q.query}</td>
+        <td class="num">${fmt.pos(q.position)}</td>
+        <td class="num">${fmt.pct(q.ctr, 2)}</td>
+        <td class="num" style="color:var(--text-tertiary)">${fmt.pct(q.expected_ctr, 1)}</td>
+        <td class="num"><span class="delta-cell delta-down">${(q.ratio*100).toFixed(0)}%</span></td>
+        <td class="num">${fmt.int(q.impressions)}</td>
+      </tr>`).join('')}
+    </tbody>`;
+}
+
+function renderCannibalisation() {
+  const data = REPORT_DATA.cannibalisation;
+  const severityFor = (pages) => {
+    const competing = pages.filter(p => p.impressions > 5).length;
+    if (competing >= 4) return { cls: 'sev-high', label: 'HIGH' };
+    if (competing >= 2) return { cls: 'sev-med', label: 'MEDIUM' };
+    return { cls: 'sev-low', label: 'LOW' };
+  };
+  const shortUrl = u => u.replace('https://', '').replace('www.', '');
+  document.getElementById('cannibal-grid').innerHTML = Object.entries(data).map(([query, info]) => {
+    const pages = info.pages.filter(p => p.impressions >= 5).slice(0, 6);
+    const sev = severityFor(pages);
+    return `
+      <div class="cannibal">
+        <div class="cannibal-head">
+          <span class="cannibal-query">"${query}"</span>
+          <span class="cannibal-severity ${sev.cls}">${sev.label}</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-tertiary); margin-bottom:10px; display:flex; justify-content:space-between">
+          <span>URL</span><span style="display:flex; gap:14px"><span>Pos</span><span>Cl</span><span>Imp</span></span>
+        </div>
+        ${pages.map((p, i) => `
+          <div class="cannibal-row">
+            <div class="cannibal-url ${i === 0 ? 'primary' : ''}" title="${p.url}">${shortUrl(p.url)}</div>
+            <div class="cannibal-pos">${p.position.toFixed(1)}</div>
+            <div class="cannibal-clicks">${p.clicks}</div>
+            <div class="cannibal-imps">${p.impressions}</div>
+          </div>`).join('')}
+      </div>`;
+  }).join('');
+}
+
+function renderPages() {
+  const rows = REPORT_DATA.top_pages;
+  const shortUrl = u => u.replace('https://', '').replace('www.', '');
+  document.getElementById('pages-table').innerHTML = `
+    <thead>
+      <tr><th>Page</th><th class="num">Clicks</th><th class="num">WoW</th><th class="num">Impressions</th><th class="num">CTR</th><th class="num">Pos</th></tr>
+    </thead>
+    <tbody>
+      ${rows.map(r => `<tr>
+        <td class="url-cell" title="${r.url}">${shortUrl(r.url)}</td>
+        <td class="num">${fmt.int(r.clicks)}</td>
+        <td class="num">${r.clicks_delta == null
+          ? '<span class="page-delta delta-flat">NEW</span>'
+          : `<span class="page-delta ${deltaClass(r.clicks_delta)}">${fmt.pctDelta(r.clicks_delta)}</span>`}</td>
+        <td class="num">${fmt.int(r.impressions)}</td>
+        <td class="num">${fmt.pct(r.ctr, 2)}</td>
+        <td class="num">${fmt.pos(r.position)}</td>
+      </tr>`).join('')}
+    </tbody>`;
+}
+
+// ============== Privacy cluster deep-dive ==============
+function renderPrivacy() {
+  const p = REPORT_DATA.privacy_cluster;
+
+  // KPI tiles
+  const s = p.summary;
+  const kpis = [
+    { label: 'Total queries', value: s.total_queries, sub: 'privacy-related variants' },
+    { label: 'Impressions', value: fmt.int(s.total_impressions), sub: 'last 30 days' },
+    { label: 'Clicks', value: fmt.int(s.total_clicks), sub: 'almost entirely brand-driven' },
+    { label: 'CTR', value: fmt.pct(s.ctr, 2), sub: `vs ${fmt.pct(0.0056, 2)} site avg` },
+  ];
+  document.getElementById('privacy-kpis').innerHTML = kpis.map(k => `
+    <div class="kpi">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  // Subgroups
+  document.getElementById('privacy-subgroups').innerHTML = p.subgroups.map(sg => `
+    <div class="subgroup-card">
+      <div class="subgroup-head">
+        <span class="subgroup-name">${sg.name}</span>
+        <span class="subgroup-tag">${sg.queries.length} queries · ${fmt.int(sg.queries.reduce((a,q)=>a+q.impressions,0))} imp</span>
+      </div>
+      <div class="subgroup-desc">${sg.description}</div>
+      <div class="subgroup-queries">
+        ${sg.queries.map(q => `
+          <div class="subgroup-q-row">
+            <div class="subgroup-q" title="${q.query}">${q.query}</div>
+            <div class="subgroup-q-imp">${fmt.int(q.impressions)} imp</div>
+            <div class="subgroup-q-pos">pos ${q.position.toFixed(1)}</div>
+            <div class="subgroup-q-cl ${q.clicks === 0 ? 'zero' : ''}">${q.clicks} cl</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  // Insights (which include simple markdown-style **bold**)
+  const renderInsight = (text) => text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  document.getElementById('privacy-insights').innerHTML = `
+    <ul>
+      ${p.insights.map(i => `<li>${renderInsight(i)}</li>`).join('')}
+    </ul>
+    <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;">Recommended actions</div>
+    <ul style="margin-top: 12px">
+      ${p.recommended_actions.map(a => `<li>${renderInsight(a)}</li>`).join('')}
+    </ul>`;
+}
+
+// ============== Blog section ==============
+function renderBlog() {
+  const b = REPORT_DATA.blog_section;
+  const slug = u => {
+    const parts = u.replace('https://', '').replace('www.', '').split('/blog/');
+    return '/blog/' + (parts[1] || '');
+  };
+
+  // Summary KPIs
+  const kpis = [
+    { label: 'Total blog clicks', value: fmt.int(b.summary.total_clicks), sub: `${(b.summary.share_of_clicks*100).toFixed(1)}% of weekly clicks` },
+    { label: 'Total blog impressions', value: fmt.int(b.summary.total_impressions), sub: '30-day total' },
+    { label: 'Blog CTR', value: fmt.pct(b.summary.ctr, 2), sub: 'vs 0.56% site average' },
+    { label: 'Top 10 blog posts', value: '10', sub: 'tracked in this report' },
+  ];
+  document.getElementById('blog-kpis').innerHTML = kpis.map(k => `
+    <div class="kpi">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  // Top by clicks
+  document.getElementById('blog-by-clicks').innerHTML = `
+    <div class="blog-col-head">
+      <div class="blog-col-title">Top 10 by clicks</div>
+      <div class="blog-col-meta">Posts converting impressions to traffic</div>
+    </div>
+    ${b.top_by_clicks.map((p, i) => `
+      <div class="blog-row">
+        <div style="display:flex; align-items:center; min-width:0">
+          <span class="blog-rank">${(i+1).toString().padStart(2, '0')}</span>
+          <span class="blog-slug" title="${p.url}">${slug(p.url)}</span>
+        </div>
+        <div class="blog-metric">
+          <span class="blog-metric-val">${fmt.int(p.clicks)} cl</span>
+          <span class="blog-metric-sub">${fmt.int(p.impressions)} imp · ${fmt.pct(p.ctr, 2)} · pos ${p.position.toFixed(1)}</span>
+        </div>
+      </div>`).join('')}`;
+
+  // Top by impressions
+  document.getElementById('blog-by-imps').innerHTML = `
+    <div class="blog-col-head">
+      <div class="blog-col-title">Top 10 by impressions</div>
+      <div class="blog-col-meta">Visibility leaders — but mostly low CTR</div>
+    </div>
+    ${b.top_by_impressions.map((p, i) => `
+      <div class="blog-row">
+        <div style="display:flex; align-items:center; min-width:0">
+          <span class="blog-rank">${(i+1).toString().padStart(2, '0')}</span>
+          <span class="blog-slug" title="${p.url}">${slug(p.url)}</span>
+        </div>
+        <div class="blog-metric">
+          <span class="blog-metric-val">${fmt.int(p.impressions)} imp</span>
+          <span class="blog-metric-sub">${fmt.int(p.clicks)} cl · ${fmt.pct(p.ctr, 2)} · pos ${p.position.toFixed(1)}</span>
+        </div>
+      </div>`).join('')}`;
+
+  // Insights
+  const renderInsight = (text) => text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  document.getElementById('blog-insights').innerHTML = `
+    <ul>${b.insights.map(i => `<li>${renderInsight(i)}</li>`).join('')}</ul>`;
+}
+
+function renderActions() {
+  const cols = [
+    { flag: 'flag-urgent', label: 'Urgent', items: [
+      { t: 'Investigate strkbtc faucet traffic crash', d: '12-13 May saw 1,350 + 1,180 clicks/day (mostly strkbtc faucet). This week strkbtc faucet was down to 37 clicks. Was 12-13 May a campaign or organic viral attention? Either build a permanent landing path to retain it, or accept it as one-time.' },
+      { t: 'Fix CTR on docs.starknet.io/learn/protocol/strk', d: '9,448 impressions this week at pos 4.7 producing only 14 clicks (0.15% CTR). Expected at that position would be ~6%. Title/meta is failing badly — biggest single CTR rewrite opportunity right now.' },
+      { t: '"starknet wallet" cannibalisation still active', d: 'Same pattern as 19 May report: /wallets/ at pos 2.5 (strong), homepage at 5.8, getting-started blog at 15.1. 465 clicks total but the homepage + blog dilute the primary listing. Canonical the blog or rewrite for long-tail intent.' },
+      { t: 'Fix /dapps/ CTR', d: '9,748 impressions at pos 10.6 → 16 clicks (0.16% CTR). Page either ranks for wrong intent or meta is broken. Rewrite or noindex if not converting.' },
+    ]},
+    { flag: 'flag-week', label: 'This week', items: [
+      { t: 'Build /privacy/ landing page', d: 'strkbtc cluster generated >1,500 clicks last week and still drives 414 clicks this week. Consolidate /strkbtc/, /blog/strkbtc-*, /blog/strk20, /blog/why-starknet-privacy-chain/ under a single /privacy/ hub with FAQ schema for AI Overview citation.' },
+      { t: 'Audit "account abstraction" cannibalisation', d: 'Blog at pos 11.1 with 1,816 impressions gets 4 clicks. Docs page at pos 4.6 (75 imps) gets 0. The docs page should rank — fix internal linking, then update blog meta to redirect intent to docs.' },
+      { t: 'Quick wins: top 5 by lost clicks', d: 'Address strk (~270 lost clicks/mo), amm (~225 lost), snos (~221 lost), strk coin (~117 lost), starknet coin (~92 lost). Meta + title rewrites.' },
+      { t: 'Rewrite meta on top losers', d: 'Pages with >1k impressions and <0.5% CTR: /events/ (5.8k imps, 0.22%), /blog/starknet-starter-pack/ (2.8k imps, 0.28%), docs.starknet.io/learn/protocol/snos (4k imps, 0.35%).' },
+    ]},
+    { flag: 'flag-month', label: 'This month', items: [
+      { t: 'Non-branded content programme', d: 'Non-branded ≈ 6% of clicks despite 36% of impressions. Bridge & Wallet cluster shows it CAN convert (19.7% CTR). Goal: repeat the recipe across DeFi/Earn/Cairo clusters.' },
+      { t: 'Build /btcfi/ landing page', d: 'Bitcoin-intent traffic (btc staking, btcfi, bitcoin yield, stake btc) is small but compounding. No dedicated page exists. Page should anchor the cluster strkbtc generated.' },
+      { t: 'Reverse CTR decline trend', d: 'Dec CTR 1.38% → May 0.58%. Weighted by impressions, ~30%+ CTR erosion over 6 months. Investigate SERP-feature loss (AI Overviews, knowledge panels) on top queries.' },
+      { t: 'Reduce brand-keyword reliance', d: '1,407 clicks on "starknet" alone (26.6% CTR) is healthy but brand-core dependency is rising. Diversify into Bridge & Wallet, Staking & Earn, BTCFi as growth verticals.' },
+    ]},
+    { flag: 'flag-none', label: 'No action', items: [
+      { t: 'Position improving from a high base', d: 'Avg position improved 10.31 → 9.20 week-on-week. Despite the click drop (mostly viral-spike washout), ranking is healthier.' },
+      { t: 'Brand Core cluster stable', d: 'Brand Core converts at ~21% CTR — no action needed. Monitor only.' },
+      { t: 'Bridge & Wallet healthy', d: 'Cluster CTR ~20% on 4.2k impressions — keep doing whatever\'s working.' },
+    ]},
+  ];
+  document.getElementById('actions-grid').innerHTML = cols.map(c => `
+    <div class="action-col">
+      <div class="action-flag ${c.flag}">${c.label}</div>
+      <ul class="action-list">
+        ${c.items.map(i => `<li class="action-item"><strong>${i.t}</strong><span>${i.d}</span></li>`).join('')}
+      </ul>
+    </div>`).join('');
+}
+
+// ============== Render archived week panels ==============
+function renderArchivedWeek(weekData, panelEl) {
+  const tw = weekData.this_week;
+  const lw = weekData.last_week;
+  const cl_d = (tw.clicks - lw.clicks) / lw.clicks;
+  const im_d = (tw.impressions - lw.impressions) / lw.impressions;
+  const ctr_d = (tw.ctr - lw.ctr) / lw.ctr;
+  const pos_d = tw.position - lw.position;
+
+  const shortUrl = u => u.replace('https://', '').replace('www.', '');
+
+  panelEl.innerHTML = `
+    <div class="archive-banner">
+      <div class="archive-banner-text">
+        <strong>Archived report</strong> — generated ${weekData.generated_at}. Showing summary view of week ${tw.start} → ${tw.end}.
+      </div>
+      <div class="archive-banner-meta">
+        ${tw.start} → ${tw.end}<br/>
+        vs ${lw.start} → ${lw.end}
+      </div>
+    </div>
+
+    <section>
+      <div class="section-head">
+        <span class="section-number">01</span>
+        <h2>Week vs. last week</h2>
+        <span class="section-note">${tw.start} → ${tw.end} vs ${lw.start} → ${lw.end}</span>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Clicks (week)</div>
+          <div class="kpi-value">${fmt.int(tw.clicks)}</div>
+          <div class="kpi-delta ${deltaClass(cl_d)}">${deltaArrow(cl_d)} ${fmt.pctDelta(cl_d)}</div>
+          <div class="kpi-sub">vs ${fmt.int(lw.clicks)} last week</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Impressions (week)</div>
+          <div class="kpi-value">${fmt.int(tw.impressions)}</div>
+          <div class="kpi-delta ${deltaClass(im_d)}">${deltaArrow(im_d)} ${fmt.pctDelta(im_d)}</div>
+          <div class="kpi-sub">vs ${fmt.int(lw.impressions)} last week</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">CTR (week)</div>
+          <div class="kpi-value">${fmt.pct(tw.ctr, 2)}</div>
+          <div class="kpi-delta ${deltaClass(ctr_d)}">${deltaArrow(ctr_d)} ${fmt.pctDelta(ctr_d)}</div>
+          <div class="kpi-sub">vs ${fmt.pct(lw.ctr, 2)} last week</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Avg position</div>
+          <div class="kpi-value">${fmt.pos(tw.position)}</div>
+          <div class="kpi-delta ${deltaClass(pos_d, true)}">${deltaArrow(pos_d, true)} ${fmt.posDelta(pos_d)}</div>
+          <div class="kpi-sub">vs ${fmt.pos(lw.position)} last week</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <span class="section-number">02</span>
+        <h2>Week summary</h2>
+      </div>
+      <div class="callout">${weekData.summary}</div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <span class="section-number">03</span>
+        <h2>Top queries</h2>
+        <span class="section-note">Top 10 by clicks for the week</span>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Query</th><th class="num">Clicks</th><th class="num">Impressions</th><th class="num">CTR</th><th class="num">Pos</th></tr>
+          </thead>
+          <tbody>
+            ${weekData.top_queries.map(q => `<tr>
+              <td class="query-cell">${q.query}</td>
+              <td class="num">${fmt.int(q.clicks)}</td>
+              <td class="num">${fmt.int(q.impressions)}</td>
+              <td class="num">${fmt.pct(q.ctr, 2)}</td>
+              <td class="num">${fmt.pos(q.position)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <span class="section-number">04</span>
+        <h2>Top pages</h2>
+        <span class="section-note">Top 10 by clicks for the week</span>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Page</th><th class="num">Clicks</th><th class="num">Impressions</th><th class="num">CTR</th><th class="num">Pos</th></tr>
+          </thead>
+          <tbody>
+            ${weekData.top_pages.map(p => `<tr>
+              <td class="url-cell" title="${p[0]}">${shortUrl(p[0])}</td>
+              <td class="num">${fmt.int(p[1])}</td>
+              <td class="num">${fmt.int(p[2])}</td>
+              <td class="num">${fmt.pct(p[3], 2)}</td>
+              <td class="num">${fmt.pos(p[4])}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <span class="section-number">05</span>
+        <h2>Headline actions from this report</h2>
+      </div>
+      <div class="table-card" style="padding: 18px 22px">
+        <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:14px">
+          ${weekData.headline_actions.map((a, i) => `
+            <li style="display:flex; gap:14px; padding-bottom:14px; ${i < weekData.headline_actions.length - 1 ? 'border-bottom: 1px solid var(--border);' : ''}">
+              <div style="color:var(--accent); font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:600; min-width:24px; padding-top:2px">${(i+1).toString().padStart(2, '0')}</div>
+              <div style="color:var(--text-secondary); font-size:13px; line-height:1.55">${a}</div>
+            </li>`).join('')}
+        </ul>
+      </div>
+    </section>
+  `;
+}
+
+function renderArchivedWeeks() {
+  const weeks = REPORT_DATA.prior_weeks;
+  weeks.forEach(w => {
+    const panel = document.getElementById('panel-' + w.id);
+    if (panel) renderArchivedWeek(w, panel);
+  });
+}
+
+// ============== Tab switching ==============
+function setupTabs() {
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(`[data-panel="${target}"]`).classList.add('active');
+      if (target === 'current') {
+        setTimeout(renderCharts, 50);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+// ============== Master tabs (channel switching) ==============
+function setupMasterTabs() {
+  const tabs = document.querySelectorAll('.master-tab:not(.disabled)');
+  const panels = document.querySelectorAll('.channel-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.channel;
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(`.channel-panel[data-channel="${target}"]`).classList.add('active');
+      // Force chart re-render after panel becomes visible
+      setTimeout(() => {
+        if (target === 'seo') renderCharts();
+        if (target === 'email') renderEmailCharts();
+      }, 50);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+// ============== Email KPIs ==============
+function renderEmailKPIs() {
+  const tw = REPORT_DATA.email.this_week;
+  const lw = REPORT_DATA.email.last_week;
+  const w = REPORT_DATA.email.wow;
+
+  const items = [
+    { label: 'Open rate (week)', value: fmt.pct(tw.open_rate, 2), delta: w.open_rate,
+      sub: `vs ${fmt.pct(lw.open_rate, 2)} last week` },
+    { label: 'Click rate (week)', value: fmt.pct(tw.click_rate, 2), delta: w.click_rate,
+      sub: `vs ${fmt.pct(lw.click_rate, 2)} last week` },
+    { label: 'Unsubscribe rate', value: fmt.pct(tw.unsub_rate, 3), delta: w.unsub_rate, invert: true,
+      sub: `vs ${fmt.pct(lw.unsub_rate, 3)} last week` },
+    { label: 'Campaigns sent', value: tw.campaigns, deltaAbs: w.campaigns, isAbs: true,
+      sub: `${fmt.int(tw.sent)} emails this week` },
+  ];
+
+  document.getElementById('email-kpi-grid').innerHTML = items.map(k => {
+    const d = k.isAbs ? k.deltaAbs : k.delta;
+    const cls = deltaClass(d, k.invert);
+    const arrow = deltaArrow(d, k.invert);
+    const text = k.isAbs ? (d > 0 ? '+'+d : d) : fmt.pctDelta(d);
+    return `
+      <div class="kpi">
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-value">${k.value}</div>
+        <div class="kpi-delta ${cls}">${arrow} ${text}</div>
+        <div class="kpi-sub">${k.sub}</div>
+      </div>`;
+  }).join('');
+}
+
+// ============== Email totals ==============
+function renderEmailTotals() {
+  const t = REPORT_DATA.email.totals;
+  const items = [
+    { label: 'Total campaigns', value: t.campaigns, sub: 'Apr 2025 → May 2026' },
+    { label: 'Total delivered', value: fmt.int(t.delivered), sub: `${fmt.int(t.sent)} sent` },
+    { label: 'Average open rate', value: fmt.pct(t.open_rate, 2), sub: 'all-time weighted' },
+    { label: 'Average click rate', value: fmt.pct(t.click_rate, 2), sub: `${fmt.int(t.clicked)} clicks` },
+  ];
+  document.getElementById('email-totals-grid').innerHTML = items.map(k => `
+    <div class="kpi">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+}
+
+// ============== Email charts (weekly time series) ==============
+function drawEmailLine(svgId, values, ma, options={}) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const W = 700, H = 200, PADL = 38, PADR = 12, PADT = 12, PADB = 24;
+  const innerW = W - PADL - PADR;
+  const innerH = H - PADT - PADB;
+  const n = values.length;
+
+  let minV = options.fromZero ? 0 : Math.min(...values.filter(v => v > 0), ...ma.filter(v => v > 0));
+  let maxV = Math.max(...values, ...ma);
+  if (maxV === minV) maxV = minV + 1;
+  const range = maxV - minV;
+  maxV = maxV + range * 0.08;
+
+  const x = i => PADL + (i / (n - 1 || 1)) * innerW;
+  const y = v => PADT + innerH - ((v - minV) / (maxV - minV)) * innerH;
+
+  let grid = '';
+  for (let i = 0; i <= 4; i++) {
+    const yv = minV + (maxV - minV) * (i / 4);
+    const yp = PADT + innerH - (i / 4) * innerH;
+    const label = options.format ? options.format(yv) : Math.round(yv);
+    grid += `<line x1="${PADL}" y1="${yp}" x2="${W - PADR}" y2="${yp}" stroke="#1c2030" stroke-width="1" />`;
+    grid += `<text x="${PADL - 6}" y="${yp + 3}" text-anchor="end" fill="#5c6273" font-size="9" font-family="JetBrains Mono, monospace">${label}</text>`;
+  }
+
+  const labels = REPORT_DATA.email.weekly_series;
+  let xLabels = '';
+  const labelStops = [0, Math.floor(n*0.25), Math.floor(n*0.5), Math.floor(n*0.75), n-1];
+  for (const idx of labelStops) {
+    const d = labels[idx].week_start.slice(5);
+    xLabels += `<text x="${x(idx)}" y="${H - 6}" text-anchor="middle" fill="#5c6273" font-size="9" font-family="JetBrains Mono, monospace">${d}</text>`;
+  }
+
+  // Only plot points where there's data (sent > 0 weeks)
+  const seriesPoints = values.map((v, i) => ({ v, i, has: v > 0 || ma[i] > 0 }));
+  const rawSegments = [];
+  let cur = [];
+  for (const p of seriesPoints) {
+    if (p.has) cur.push(p);
+    else if (cur.length) { rawSegments.push(cur); cur = []; }
+  }
+  if (cur.length) rawSegments.push(cur);
+
+  const rawPath = rawSegments.map(seg =>
+    seg.map((p, j) => `${j === 0 ? 'M' : 'L'} ${x(p.i).toFixed(1)} ${y(p.v).toFixed(1)}`).join(' ')
+  ).join(' ');
+
+  const maPath = ma.map((v, i) => v > 0 ? `${i === 0 || ma[i-1] === 0 ? 'M' : 'L'} ${x(i).toFixed(1)} ${y(v).toFixed(1)}` : '').filter(Boolean).join(' ');
+
+  // Highlight last 4 weeks
+  const bandX1 = x(n - 4);
+  const bandX2 = x(n - 1);
+
+  svg.innerHTML = `
+    ${grid}
+    <rect x="${bandX1}" y="${PADT}" width="${bandX2-bandX1}" height="${innerH}" fill="#f97316" opacity="0.04" />
+    <path d="${rawPath}" fill="none" stroke="#5c6273" stroke-width="1" stroke-opacity="0.55" />
+    <path d="${maPath}" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    ${xLabels}
+  `;
+}
+
+function renderEmailCharts() {
+  const s = REPORT_DATA.email.weekly_series;
+  const ma = REPORT_DATA.email.ma;
+  drawEmailLine('email-chart-sent', s.map(w => w.sent), ma.sent, { fromZero: true, format: v => v >= 1000 ? (v/1000).toFixed(1)+'k' : v });
+  drawEmailLine('email-chart-open', s.map(w => w.open_rate), ma.open_rate, { fromZero: true, format: v => (v*100).toFixed(0)+'%' });
+  drawEmailLine('email-chart-click', s.map(w => w.click_rate), ma.click_rate, { fromZero: true, format: v => (v*100).toFixed(1)+'%' });
+  drawEmailLine('email-chart-unsub', s.map(w => w.unsub_rate), ma.unsub_rate, { fromZero: true, format: v => (v*100).toFixed(2)+'%' });
+
+  // Meta
+  const totalSent = s.reduce((a,w)=>a+w.sent, 0);
+  document.getElementById('email-sent-meta').textContent = `${fmt.int(totalSent)} delivered (26 weeks)`;
+  const lastFour = s.slice(-4);
+  const validOpens = lastFour.filter(w => w.open_rate > 0);
+  const recentOpen = validOpens.length ? validOpens.reduce((a,w)=>a+w.open_rate,0) / validOpens.length : 0;
+  document.getElementById('email-open-meta').textContent = `Last 4w avg: ${fmt.pct(recentOpen, 2)}`;
+  const validClicks = lastFour.filter(w => w.click_rate > 0);
+  const recentClick = validClicks.length ? validClicks.reduce((a,w)=>a+w.click_rate,0) / validClicks.length : 0;
+  document.getElementById('email-click-meta').textContent = `Last 4w avg: ${fmt.pct(recentClick, 2)}`;
+  const validUnsub = lastFour.filter(w => w.unsub_rate > 0);
+  const recentUnsub = validUnsub.length ? validUnsub.reduce((a,w)=>a+w.unsub_rate,0) / validUnsub.length : 0;
+  document.getElementById('email-unsub-meta').textContent = `Last 4w avg: ${fmt.pct(recentUnsub, 3)}`;
+}
+
+// ============== Email monthly table ==============
+function renderEmailMonthly() {
+  const rows = REPORT_DATA.email.monthly;
+  document.getElementById('email-monthly-table').innerHTML = `
+    <thead>
+      <tr>
+        <th>Month</th><th class="num">Campaigns</th><th class="num">Delivered</th>
+        <th class="num">Open rate</th><th class="num">MoM</th>
+        <th class="num">Click rate</th><th class="num">MoM</th>
+        <th class="num">Unsub rate</th><th class="num">MoM</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(m => `<tr>
+        <td class="month-cell">${m.month}</td>
+        <td class="num">${m.campaigns}</td>
+        <td class="num">${fmt.int(m.delivered)}</td>
+        <td class="num">${fmt.pct(m.open_rate, 2)}</td>
+        <td class="num"><span class="delta-cell ${deltaClass(m.open_rate_delta)}">${fmt.pctDelta(m.open_rate_delta)}</span></td>
+        <td class="num">${fmt.pct(m.click_rate, 2)}</td>
+        <td class="num"><span class="delta-cell ${deltaClass(m.click_rate_delta)}">${fmt.pctDelta(m.click_rate_delta)}</span></td>
+        <td class="num">${fmt.pct(m.unsub_rate, 3)}</td>
+        <td class="num"><span class="delta-cell ${deltaClass(m.unsub_rate_delta, true)}">${fmt.pctDelta(m.unsub_rate_delta)}</span></td>
+      </tr>`).join('')}
+    </tbody>`;
+}
+
+// ============== Email top campaigns ==============
+function renderEmailTopCampaigns() {
+  const byClicks = REPORT_DATA.email.top_by_opens_30d;
+  const byOpenRate = REPORT_DATA.email.top_by_open_rate_30d;
+
+  document.getElementById('email-top-clicks').innerHTML = `
+    <div class="blog-col-head">
+      <div class="blog-col-title">Top 10 by clicks (30d)</div>
+      <div class="blog-col-meta">Campaigns earning actual engagement</div>
+    </div>
+    ${byClicks.map((c, i) => `
+      <div class="blog-row">
+        <div style="display:flex; align-items:center; min-width:0">
+          <span class="blog-rank">${(i+1).toString().padStart(2, '0')}</span>
+          <div style="min-width:0; overflow:hidden">
+            <div class="blog-slug" title="${c.subject}">${c.name}</div>
+            <div style="font-size:10px; color:var(--text-tertiary); font-family:'JetBrains Mono', monospace; margin-top:2px">${c.send_date}</div>
+          </div>
+        </div>
+        <div class="blog-metric">
+          <span class="blog-metric-val">${fmt.int(c.clicked)} cl</span>
+          <span class="blog-metric-sub">${fmt.int(c.opened)} op · ${fmt.pct(c.open_rate, 2)} · ${fmt.pct(c.click_rate, 2)} CTR</span>
+        </div>
+      </div>`).join('')}`;
+
+  document.getElementById('email-top-openrate').innerHTML = `
+    <div class="blog-col-head">
+      <div class="blog-col-title">Top 10 by open rate (30d)</div>
+      <div class="blog-col-meta">Best inbox placement / subject relevance</div>
+    </div>
+    ${byOpenRate.map((c, i) => `
+      <div class="blog-row">
+        <div style="display:flex; align-items:center; min-width:0">
+          <span class="blog-rank">${(i+1).toString().padStart(2, '0')}</span>
+          <div style="min-width:0; overflow:hidden">
+            <div class="blog-slug" title="${c.subject}">${c.name}</div>
+            <div style="font-size:10px; color:var(--text-tertiary); font-family:'JetBrains Mono', monospace; margin-top:2px">${c.send_date}</div>
+          </div>
+        </div>
+        <div class="blog-metric">
+          <span class="blog-metric-val">${fmt.pct(c.open_rate, 1)}</span>
+          <span class="blog-metric-sub">${fmt.int(c.delivered)} sent · ${fmt.int(c.opened)} op</span>
+        </div>
+      </div>`).join('')}`;
+}
+
+// ============== Email unsubscribe risk ==============
+function renderEmailUnsubRisk() {
+  const rows = REPORT_DATA.email.unsub_risk;
+  if (rows.length === 0) {
+    document.getElementById('email-unsub-table').innerHTML = `
+      <thead><tr><th>Campaign</th></tr></thead>
+      <tbody><tr><td style="color:var(--text-tertiary)">No campaigns above the 0.5% threshold.</td></tr></tbody>`;
+    return;
+  }
+  document.getElementById('email-unsub-table').innerHTML = `
+    <thead>
+      <tr><th>Campaign</th><th>Sent date</th><th class="num">Delivered</th>
+        <th class="num">Unsubs</th><th class="num">Unsub rate</th>
+        <th class="num">Open rate</th><th>Type</th></tr>
+    </thead>
+    <tbody>
+      ${rows.map(c => `<tr>
+        <td class="query-cell" style="font-size:12px">${c.name}</td>
+        <td style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-secondary)">${c.send_date}</td>
+        <td class="num">${fmt.int(c.delivered)}</td>
+        <td class="num">${c.unsubscribed}</td>
+        <td class="num"><span class="delta-cell delta-down">${fmt.pct(c.unsub_rate, 2)}</span></td>
+        <td class="num">${fmt.pct(c.open_rate, 1)}</td>
+        <td style="font-size:11px; color:var(--text-secondary)">${c.type || '—'}</td>
+      </tr>`).join('')}
+    </tbody>`;
+}
+
+// ============== Email by type (cluster grid style) ==============
+function renderEmailByType() {
+  const rows = REPORT_DATA.email.by_type;
+  if (!rows.length) {
+    document.getElementById('email-by-type').innerHTML = '<div style="color:var(--text-tertiary); padding:20px">No type data available.</div>';
+    return;
+  }
+  document.getElementById('email-by-type').innerHTML = rows.map(t => `
+    <div class="cluster">
+      <div class="cluster-name">${t.type}</div>
+      <div class="cluster-stats">
+        <div class="cluster-stat"><span class="cluster-stat-label">Campaigns</span><span class="cluster-stat-value">${t.campaigns}</span></div>
+        <div class="cluster-stat"><span class="cluster-stat-label">Delivered</span><span class="cluster-stat-value">${fmt.int(t.sent)}</span></div>
+        <div class="cluster-stat"><span class="cluster-stat-label">Open rate</span><span class="cluster-stat-value">${fmt.pct(t.open_rate, 1)}</span></div>
+        <div class="cluster-stat"><span class="cluster-stat-label">Click rate</span><span class="cluster-stat-value">${fmt.pct(t.click_rate, 2)}</span></div>
+      </div>
+      <div class="cluster-meta">
+        <span>Unsub: ${fmt.pct(t.unsub_rate, 3)}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ============== Email by subject classification ==============
+function renderEmailBySubject() {
+  const rows = REPORT_DATA.email.by_subject_class;
+  if (!rows.length) {
+    document.getElementById('email-by-subject').innerHTML = `<thead><tr><th>Classification</th></tr></thead><tbody><tr><td style="color:var(--text-tertiary)">No subject data.</td></tr></tbody>`;
+    return;
+  }
+  document.getElementById('email-by-subject').innerHTML = `
+    <thead>
+      <tr><th>Subject classification</th><th class="num">Campaigns</th>
+        <th class="num">Open rate</th><th class="num">Click rate</th><th class="num">Unsub rate</th></tr>
+    </thead>
+    <tbody>
+      ${rows.map(s => `<tr>
+        <td>${s.classification}</td>
+        <td class="num">${s.campaigns}</td>
+        <td class="num">${fmt.pct(s.open_rate, 2)}</td>
+        <td class="num">${fmt.pct(s.click_rate, 2)}</td>
+        <td class="num">${fmt.pct(s.unsub_rate, 3)}</td>
+      </tr>`).join('')}
+    </tbody>`;
+}
+
+// ============== Email best-ever campaigns ==============
+function renderEmailBest() {
+  const rows = REPORT_DATA.email.top_by_opens_alltime;
+  document.getElementById('email-best-table').innerHTML = `
+    <thead>
+      <tr><th>Campaign</th><th>Sent date</th><th class="num">Sent</th>
+        <th class="num">Opened</th><th class="num">Clicked</th>
+        <th class="num">Open rate</th><th class="num">Click rate</th></tr>
+    </thead>
+    <tbody>
+      ${rows.map(c => `<tr>
+        <td class="query-cell" style="font-size:12px">${c.name}</td>
+        <td style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-secondary)">${c.send_date}</td>
+        <td class="num">${fmt.int(c.sent)}</td>
+        <td class="num">${fmt.int(c.opened)}</td>
+        <td class="num">${fmt.int(c.clicked)}</td>
+        <td class="num"><span style="color:var(--accent); font-weight:600">${fmt.pct(c.open_rate, 1)}</span></td>
+        <td class="num">${fmt.pct(c.click_rate, 2)}</td>
+      </tr>`).join('')}
+    </tbody>`;
+}
+
+// ============== Email actions ==============
+function renderEmailActions() {
+  const cols = [
+    { flag: 'flag-urgent', label: 'Urgent', items: [
+      { t: 'Investigate deliverability', d: 'Open rates fell from 49% to 3.5% over 9 months. Run domain reputation check (Google Postmaster Tools, MXToolbox, Sender Score). Verify SPF/DKIM/DMARC alignment on hello@starknet.org. Likely landing in Gmail Promotions tab or worse, spam folder.' },
+      { t: 'Audit list quality', d: '~131k sent, 588 unsubscribes total but persistently low engagement suggests the list contains many inactive or invalid addresses. Run a re-engagement campaign on lapsed subscribers, then suppress non-openers.' },
+      { t: 'Reduce send volume on cold segments', d: 'The 23k-recipient broadcasts are damaging sender reputation. Segment by recent engagement (opened in last 90d) and send to that pool only.' },
+    ]},
+    { flag: 'flag-week', label: 'This week', items: [
+      { t: 'Test plain-text variants', d: 'Image-heavy HTML emails get flagged. Send a plain-text version of next launch announcement to a 5k test segment, compare open rates.' },
+      { t: 'Subject line A/B testing', d: '"News/Announcement" classification underperforms vs "Urgent/Time-sensitive" and "Question Format" in your data. Test the latter framings.' },
+      { t: 'Warm up sender domain', d: 'If deliverability investigation confirms reputation damage, start a 4-week warm-up: small sends (500–2k) to highly engaged users only, gradually scale.' },
+    ]},
+    { flag: 'flag-month', label: 'This month', items: [
+      { t: 'Replicate Basecamp model', d: 'Aug–Sep 2025 Basecamp emails achieved 49% open rate. They were tightly segmented programme participants. Identify other natural sub-audiences (validators, developers, governance voters).' },
+      { t: 'Build engagement scoring', d: 'In HubSpot, score contacts by recent open + click activity. Use scores to dynamically segment broadcasts. Suppress dormant contacts entirely for 60 days.' },
+      { t: 'Email frequency review', d: 'Currently sending one ~23k broadcast per week. Consider biweekly to engaged segment + monthly to broader list, rather than weekly to all.' },
+    ]},
+    { flag: 'flag-none', label: 'No action', items: [
+      { t: 'Click-through rate when opened', d: 'CTOR (clicks/opens) is 16.2% all-time — solid. When emails do reach inboxes and get opened, content quality is fine.' },
+      { t: 'Spam complaint rate', d: '0% spam reports across most campaigns. Subscribers aren\'t actively complaining — they\'re ignoring (worse signal long-term, but no policy issue).' },
+      { t: 'Bounce rate', d: 'Most campaigns under 1% bounce rate. List hygiene at the technical level is fine — the issue is engagement, not deliverability mechanics.' },
+    ]},
+  ];
+  document.getElementById('email-actions-grid').innerHTML = cols.map(c => `
+    <div class="action-col">
+      <div class="action-flag ${c.flag}">${c.label}</div>
+      <ul class="action-list">
+        ${c.items.map(i => `<li class="action-item"><strong>${i.t}</strong><span>${i.d}</span></li>`).join('')}
+      </ul>
+    </div>`).join('');
+}
+
+// Boot
+renderKPIs();
+renderCharts();
+renderMonthly();
+renderBaseline();
+renderSplit();
+renderClusters();
+renderPrivacy();
+renderBlog();
+renderQuickWins();
+renderCtrUnder();
+renderCannibalisation();
+renderPages();
+renderActions();
+renderArchivedWeeks();
+setupTabs();
+
+// Email channel
+renderEmailKPIs();
+renderEmailTotals();
+renderEmailCharts();
+renderEmailMonthly();
+renderEmailTopCampaigns();
+renderEmailUnsubRisk();
+renderEmailByType();
+renderEmailBySubject();
+renderEmailBest();
+renderEmailActions();
+
+// Master tabs
+setupMasterTabs();
+
+let resizeTO;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTO);
+  resizeTO = setTimeout(renderCharts, 100);
+});
+</script>
+</body>
+</html>
